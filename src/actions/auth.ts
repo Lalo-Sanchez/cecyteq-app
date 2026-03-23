@@ -1,9 +1,6 @@
 "use server"; // Esto le dice a Next.js que este código NUNCA se enviará al navegador (es súper seguro)
 
-import { PrismaClient } from '@prisma/client';
-
-// Iniciamos la conexión a la base de datos
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma';
 
 export async function loginUser(email: string, password_hash: string) {
   try {

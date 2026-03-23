@@ -17,3 +17,24 @@ model Usuario {
   apple_id       String?  
   fecha_creacion DateTime @default(now())
 }
+
+model Alumno {
+  id                        Int      @id @default(autoincrement())
+  matricula                 String   @unique
+  correo                    String   @unique
+  nombres                   String
+  apellidoPaterno           String
+  apellidoMaterno           String
+  turno                     String
+  grupo                     String
+  numeroLista               Int
+  edad                      Int?
+  faltas                    Int      @default(0)
+  telefono                  String?
+  direccion                 String?
+  estatus                   String
+  observaciones             String?
+  contactoEmergenciaNombre  String?
+  contactoEmergenciaTelefono String?
+  creadoEn                  DateTime @default(now())
+}
