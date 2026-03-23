@@ -10,7 +10,7 @@ Este software ha sido diseñado, estructurado y desarrollado íntegramente por e
 
 💻 Omar Camacho Covarrubias: Developer Full Stack y Arquitectura de Software.
 
-📋 Leslye Díaz Gonzales: Product Owner y Encargada del Área Administrativa.
+📋 Leslye Díaz Gonzalez: Product Owner y Encargada del Área Administrativa.
 
 ✨ Características Principales
 
