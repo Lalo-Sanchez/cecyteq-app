@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { GraduationCap, Users, AlertCircle } from 'lucide-react';
 
@@ -29,6 +29,7 @@ interface FormData {
   telefono: string;
   direccion: string;
   estatus: EstatusType;
+  observaciones: string;
   padre1Nombre: string;
   padre1Telefono: string;
   padre1Ocupacion: string;
@@ -73,6 +74,7 @@ export default function NuevoAlumnoPage() {
     telefono: '',
     direccion: '',
     estatus: 'Inscrito',
+    observaciones: '',
     padre1Nombre: '',
     padre1Telefono: '',
     padre1Ocupacion: '',
@@ -87,16 +89,58 @@ export default function NuevoAlumnoPage() {
     otroParentesco: '',
   });
   const [matricula, setMatricula] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('id');
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch('/api/alumnos');
-      const data = await res.json();
-      setMatricula(calcularMatriculaSiguiente(data));
+      try {
+        const res = await fetch('/api/alumnos');
+        const data = await res.json();
+        
+        if (editId) {
+          const idNum = parseInt(editId, 10);
+          const alumno = data.find((a: { id: number }) => a.id === idNum);
+          
+          if (alumno) {
+            setFormData({
+              nombres: alumno.nombres,
+              apellidoPaterno: alumno.apellidoPaterno,
+              apellidoMaterno: alumno.apellidoMaterno,
+              turno: alumno.turno,
+              grupo: alumno.grupo,
+              edad: alumno.edad || 15,
+              telefono: alumno.telefono || '',
+              direccion: alumno.direccion || '',
+              estatus: alumno.estatus,
+              padre1Nombre: alumno.padre1Nombre || '',
+              padre1Telefono: alumno.padre1Telefono || '',
+              padre1Ocupacion: alumno.padre1Ocupacion || '',
+              padre2Nombre: alumno.padre2Nombre || '',
+              padre2Telefono: alumno.padre2Telefono || '',
+              padre2Ocupacion: alumno.padre2Ocupacion || '',
+              contactoEmergenciaTipo: alumno.contactoEmergenciaTipo || 'padre1',
+              otroNombre: alumno.otroNombre || '',
+              otroApellidos: alumno.otroApellidos || '',
+              otroTelefono: alumno.otroTelefono || '',
+              otroOcupacion: alumno.otroOcupacion || '',
+              otroParentesco: alumno.otroParentesco || '',
+            });
+            setMatricula(alumno.matricula);
+            setIsEditing(true);
+          }
+        } else {
+          setMatricula(calcularMatriculaSiguiente(data));
+          setIsEditing(false);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
     };
     load();
-  }, []);
+  }, [editId]);
 
   const mano = obtenerCorreoInstitucional(formData.nombres, formData.apellidoPaterno);
 
@@ -124,6 +168,7 @@ export default function NuevoAlumnoPage() {
     const emergencia = getContactoEmergencia();
 
     const payload = {
+      id: editId,
       nombres: formData.nombres,
       apellidoPaterno: formData.apellidoPaterno,
       apellidoMaterno: formData.apellidoMaterno,
@@ -136,7 +181,7 @@ export default function NuevoAlumnoPage() {
       estatus: formData.estatus,
       correo: mano,
       matricula,
-      observaciones: '',
+      observaciones: formData.observaciones,
       contactoEmergenciaNombre: emergencia.nombre,
       contactoEmergenciaTelefono: emergencia.telefono,
       padre1Nombre: formData.padre1Nombre,
@@ -153,15 +198,16 @@ export default function NuevoAlumnoPage() {
       otroParentesco: formData.otroParentesco,
     };
 
+    const method = isEditing ? 'PUT' : 'POST';
     const response = await fetch('/api/alumnos', {
-      method: 'POST',
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      alert('Error al registrar alumno: ' + errorText);
+      alert(`Error al ${isEditing ? 'actualizar' : 'registrar'} alumno: ` + errorText);
       return;
     }
 
@@ -171,7 +217,7 @@ export default function NuevoAlumnoPage() {
   return (
     <div className="p-6 bg-slate-950 min-h-screen">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Registrar Alumno</h1>
+        <h1 className="text-2xl font-bold text-white">{isEditing ? 'Editar Alumno' : 'Registrar Alumno'}</h1>
         <Link href="/dashboard/alumnos" className="text-sm px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-100">Regresar a Listado</Link>
       </div>
 
@@ -226,6 +272,20 @@ export default function NuevoAlumnoPage() {
                 <option value="Baja">Baja</option>
                 <option value="Egresado">Egresado</option>
               </select>
+            </div>
+
+            <div className="md:col-span-3">
+              <label className="text-xs text-slate-400" htmlFor="observaciones">Observaciones</label>
+              <textarea id="observaciones" value={formData.observaciones} onChange={(e) => setFormData((f) => ({ ...f, observaciones: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded min-h-[84px]" placeholder="Ej. alumno con necesidades especiales, notas importantes..." />
+            </div>
+
+            <div>
+              <label className="text-xs text-slate-400" htmlFor="matricula">Matrícula (auto generada)</label>
+              <input id="matricula" type="text" value={matricula} readOnly className="w-full bg-slate-700 text-slate-300 p-2 rounded cursor-not-allowed font-mono" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-xs text-slate-400" htmlFor="correo">Correo Institucional (auto generado)</label>
+              <input id="correo" type="email" value={mano} readOnly className="w-full bg-slate-700 text-slate-300 p-2 rounded cursor-not-allowed" />
             </div>
           </div>
         </section>

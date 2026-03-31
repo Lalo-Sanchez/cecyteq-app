@@ -1,0 +1,55 @@
+"use client";
+
+import React from 'react';
+import Link from 'next/link';
+import { Briefcase, Users, Bell } from 'lucide-react';
+
+export default function DocentesPage() {
+  return (
+    <div className="space-y-8">
+      <div className="rounded-[2rem] border border-slate-800/50 bg-slate-950/90 p-8 shadow-glow">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-blue-300/80">Servicios Docentes</p>
+            <h1 className="text-4xl font-semibold text-white">Gestión de Docentes</h1>
+            <p className="mt-3 max-w-2xl text-slate-400">Administra grupos, docentes y avisos desde un único lugar. Elige la sección que quieras gestionar y comienza a trabajar con datos académicos y comunicados.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-5 py-4 text-white shadow-sm">
+              <div className="flex items-center gap-3 text-cyan-300"><Users size={20} /> <span className="font-semibold">Grupos</span></div>
+              <p className="mt-2 text-sm text-slate-400">Administra la distribución por grupo.</p>
+            </div>
+            <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-5 py-4 text-white shadow-sm">
+              <div className="flex items-center gap-3 text-emerald-300"><Briefcase size={20} /> <span className="font-semibold">Docentes</span></div>
+              <p className="mt-2 text-sm text-slate-400">Registra y actualiza profesores.</p>
+            </div>
+            <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-5 py-4 text-white shadow-sm">
+              <div className="flex items-center gap-3 text-rose-300"><Bell size={20} /> <span className="font-semibold">Avisos</span></div>
+              <p className="mt-2 text-sm text-slate-400">Publica comunicaciones y recordatorios.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Link href="/dashboard/docentes/grupos" className="rounded-[1.75rem] border border-slate-800/50 bg-slate-950/80 p-6 text-white shadow-glow transition hover:-translate-y-1 hover:bg-slate-900/80">
+          <div className="flex items-center gap-3 text-cyan-300"><Users size={24} /></div>
+          <h2 className="mt-4 text-xl font-semibold">Grupos</h2>
+          <p className="mt-2 text-slate-400 text-sm">Revisa, filtra y organiza los grupos de enseñanza por grado, turno y materia.</p>
+        </Link>
+
+        <Link href="/dashboard/docentes/docentes" className="rounded-[1.75rem] border border-slate-800/50 bg-slate-950/80 p-6 text-white shadow-glow transition hover:-translate-y-1 hover:bg-slate-900/80">
+          <div className="flex items-center gap-3 text-emerald-300"><Briefcase size={24} /></div>
+          <h2 className="mt-4 text-xl font-semibold">Docentes</h2>
+          <p className="mt-2 text-slate-400 text-sm">Gestiona el listado de profesores, sus materias y enlaces a los grupos que atienden.</p>
+        </Link>
+
+        <Link href="/dashboard/docentes/avisos" className="rounded-[1.75rem] border border-slate-800/50 bg-slate-950/80 p-6 text-white shadow-glow transition hover:-translate-y-1 hover:bg-slate-900/80">
+          <div className="flex items-center gap-3 text-rose-300"><Bell size={24} /></div>
+          <h2 className="mt-4 text-xl font-semibold">Avisos</h2>
+          <p className="mt-2 text-slate-400 text-sm">Publica mensajes, recordatorios y comunicaciones a alumnos y docentes.</p>
+        </Link>
+      </div>
+    </div>
+  );
+}

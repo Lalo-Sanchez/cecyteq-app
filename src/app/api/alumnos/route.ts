@@ -52,11 +52,68 @@ const obtenerNumeroLista = async (grupo: string, idExcluir?: number, apellidoPat
   return index + 1;
 };
 
+const recalcularNumerosLista = async (grupo: string) => {
+  const alumnosGrupo = await prisma.alumno.findMany({
+    where: { grupo },
+    orderBy: { apellidoPaterno: 'asc' },
+  });
+
+  for (let i = 0; i < alumnosGrupo.length; i++) {
+    await prisma.alumno.update({
+      where: { id: alumnosGrupo[i].id },
+      data: { numeroLista: i + 1 },
+    });
+  }
+};
+
+const obtenerGrupoPorNombre = async (nombre: string, turno?: string) => {
+  if (!nombre) return null;
+  const grupoExistente = await prisma.grupo.findUnique({
+    where: { nombre },
+  });
+
+  if (grupoExistente) return grupoExistente;
+
+  return prisma.grupo.create({
+    data: {
+      nombre,
+      turno: turno || 'Desconocido',
+      numeroMaterias: 0,
+    },
+  });
+};
+
+const migrarGruposExistentes = async () => {
+  const count = await prisma.grupo.count();
+  if (count > 0) return;
+
+  const distinctGrupos = await prisma.alumno.findMany({
+    select: { grupo: true, turno: true },
+    distinct: ['grupo'],
+  });
+
+  for (const item of distinctGrupos) {
+    if (!item.grupo) continue;
+    const grupo = await prisma.grupo.create({
+      data: {
+        nombre: item.grupo,
+        turno: item.turno || 'Desconocido',
+        numeroMaterias: 0,
+      },
+    });
+    await prisma.alumno.updateMany({
+      where: { grupo: item.grupo },
+      data: { grupoId: grupo.id },
+    });
+  }
+};
+
 export async function GET() {
   const count = await prisma.alumno.count();
   if (count === 0) {
     let matricula = await calcularMatriculaSiguiente();
     for (const item of seedLista) {
+      const grupoDb = await obtenerGrupoPorNombre(item.grupo, item.turno);
       await prisma.alumno.create({
         data: {
           matricula: matricula.toString(),
@@ -66,6 +123,7 @@ export async function GET() {
           apellidoMaterno: item.apellidoMaterno,
           turno: item.turno,
           grupo: item.grupo,
+          grupoId: grupoDb?.id,
           numeroLista: 1,
           estatus: 'Inscrito',
           faltas: 0,
@@ -75,16 +133,23 @@ export async function GET() {
     }
   }
 
-  const alumnos = await prisma.alumno.findMany({ orderBy: { grupo: 'asc' } });
+  await migrarGruposExistentes();
+
+  const alumnos = await prisma.alumno.findMany({
+    orderBy: { grupo: 'asc' },
+    include: { grupoRel: true },
+  });
   return NextResponse.json(alumnos);
 }
 
 export async function POST(request: Request) {
   const data = await request.json();
   const matricula = await calcularMatriculaSiguiente();
-  const numeroLista = await obtenerNumeroLista(data.grupo);
+  const numeroLista = await obtenerNumeroLista(data.grupo, undefined, data.apellidoPaterno);
 
   const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno);
+
+  const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
 
   const alumno = await prisma.alumno.create({
     data: {
@@ -95,6 +160,7 @@ export async function POST(request: Request) {
       apellidoMaterno: data.apellidoMaterno,
       turno: data.turno,
       grupo: data.grupo,
+      grupoId: grupoDb?.id,
       numeroLista,
       edad: parseInt(data.edad ?? '0', 10) || null,
       faltas: Number(data.faltas ?? 0),
@@ -107,13 +173,24 @@ export async function POST(request: Request) {
     }
   });
 
+  // Recalcular números de lista del grupo para todos los alumnos
+  await recalcularNumerosLista(data.grupo);
+
   return NextResponse.json(alumno);
 }
 
 export async function PUT(request: Request) {
   const data = await request.json();
+  
+  // Obtener el alumno actual para saber el grupo anterior
+  const alumnoActual = await prisma.alumno.findUnique({
+    where: { id: Number(data.id) },
+  });
+  
   const numLista = await obtenerNumeroLista(data.grupo, Number(data.id), data.apellidoPaterno);
   const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno, Number(data.id));
+
+  const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
 
   const alumno = await prisma.alumno.update({
     where: { id: Number(data.id) },
@@ -124,6 +201,7 @@ export async function PUT(request: Request) {
       apellidoMaterno: data.apellidoMaterno,
       turno: data.turno,
       grupo: data.grupo,
+      grupoId: grupoDb?.id,
       numeroLista: numLista,
       edad: parseInt(data.edad ?? '0', 10) || null,
       faltas: Number(data.faltas ?? 0),
@@ -135,6 +213,14 @@ export async function PUT(request: Request) {
       contactoEmergenciaTelefono: data.contactoEmergenciaTelefono,
     }
   });
+
+  // Recalcular números de lista del grupo nuevo
+  await recalcularNumerosLista(data.grupo);
+  
+  // Si el grupo cambió, también recalcular el grupo anterior
+  if (alumnoActual && alumnoActual.grupo !== data.grupo) {
+    await recalcularNumerosLista(alumnoActual.grupo);
+  }
 
   return NextResponse.json(alumno);
 }

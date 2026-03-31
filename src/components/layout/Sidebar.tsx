@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, BookOpen, FileText, LogOut, CheckCircle, GraduationCap, Briefcase } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, FileText, LogOut, CheckCircle, GraduationCap, Briefcase, Bell, Award, AlertTriangle } from 'lucide-react';
 
 export default function Sidebar() {
   const router = useRouter();
@@ -25,11 +25,12 @@ useEffect(() => {
     router.push('/');
   };
 
+  const [serviciosEscolaresAbiertos, setServiciosEscolaresAbiertos] = useState(false);
+  const [serviciosDocentesAbiertos, setServiciosDocentesAbiertos] = useState(false);
+
   const adminMenu = [
     { id: '/dashboard', label: 'Panel de Control', icon: <LayoutDashboard size={20} /> },
-    { id: '/dashboard/alumnos', label: 'Servicios Escolares', icon: <Users size={20} /> },
     { id: '/dashboard/docentes', label: 'Servicios Docentes', icon: <Briefcase size={20} /> },
-    { id: '/dashboard/tramites', label: 'Trámites y Reportes', icon: <FileText size={20} /> },
   ];
 
   const docenteMenu = [
@@ -59,20 +60,137 @@ useEffect(() => {
       </div>
 
       <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => router.push(item.id)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-              pathname === item.id 
-                ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' 
-                : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
-            }`}
-          >
-            {item.icon}
-            <span className="font-medium text-sm">{item.label}</span>
-          </button>
-        ))}
+        {role === 'admin' ? (
+          <>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                pathname === '/dashboard' ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+              }`}
+            >
+              <LayoutDashboard size={20} />
+              <span className="font-medium text-sm">Panel de Control</span>
+            </button>
+
+            <button
+              onClick={() => setServiciosEscolaresAbiertos((prev) => !prev)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                serviciosEscolaresAbiertos ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+              }`}
+            >
+              <Users size={20} />
+              <span className="font-medium text-sm">Servicios Escolares</span>
+            </button>
+
+            {serviciosEscolaresAbiertos && (
+              <div className="ml-8 space-y-1 mt-1">
+                <button
+                  onClick={() => router.push('/dashboard/alumnos')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/alumnos' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <CheckCircle size={16} />
+                  <span className="text-sm">Alumnos</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/tramites')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/tramites' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <FileText size={16} />
+                  <span className="text-sm">Trámites</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/calificaciones')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/calificaciones' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <Award size={16} />
+                  <span className="text-sm">Calificaciones</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/reprobados')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/reprobados' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <AlertTriangle size={16} />
+                  <span className="text-sm">Reprobados</span>
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={() => setServiciosDocentesAbiertos((prev) => !prev)}
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all ${
+                pathname.startsWith('/dashboard/docentes') || serviciosDocentesAbiertos ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Briefcase size={20} />
+                <span className="font-medium text-sm">Servicios Docentes</span>
+              </div>
+              <span className="text-slate-400">{serviciosDocentesAbiertos ? '−' : '+'}</span>
+            </button>
+
+            {(serviciosDocentesAbiertos || pathname.startsWith('/dashboard/docentes')) && (
+              <div className="ml-8 space-y-1 mt-1">
+                <button
+                  onClick={() => router.push('/dashboard/docentes')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/docentes' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <Users size={16} />
+                  <span className="text-sm">Resumen</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/docentes/grupos')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/docentes/grupos' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <Users size={16} />
+                  <span className="text-sm">Grupos</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/docentes/docentes')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/docentes/docentes' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <Briefcase size={16} />
+                  <span className="text-sm">Docentes</span>
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/docentes/avisos')}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/docentes/avisos' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  }`}
+                >
+                  <Bell size={16} />
+                  <span className="text-sm">Avisos</span>
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => router.push(item.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                pathname === item.id ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+              }`}
+            >
+              {item.icon}
+              <span className="font-medium text-sm">{item.label}</span>
+            </button>
+          ))
+        )}
       </nav>
 
       <div className="p-4 border-t border-slate-800">

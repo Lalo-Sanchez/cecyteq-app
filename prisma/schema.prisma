@@ -27,6 +27,8 @@ model Alumno {
   apellidoMaterno           String
   turno                     String
   grupo                     String
+  grupoId                   Int?
+  grupoRel                  Grupo?   @relation(fields: [grupoId], references: [id])
   numeroLista               Int
   edad                      Int?
   faltas                    Int      @default(0)
@@ -36,5 +38,68 @@ model Alumno {
   observaciones             String?
   contactoEmergenciaNombre  String?
   contactoEmergenciaTelefono String?
+  promedioGlobal            Float?   
+  parcial1                  Float?   
+  parcial2                  Float?   
+  parcial3                  Float?   
+  recuperacion              Float?   
+  extraordinario            Float?   
+  recursamiento             Float?   
   creadoEn                  DateTime @default(now())
+  tramites                  Tramite[]
+}
+
+model Grupo {
+  id                      Int          @id @default(autoincrement())
+  nombre                  String       @unique
+  turno                   String
+  numeroMaterias          Int?         
+  promedioGeneral         Float?
+  desarrolloCalificacion  String?
+  alumnos                 Alumno[]
+  docenteGrupos           GrupoDocente[]
+  creadoEn                DateTime     @default(now())
+  actualizadoEn           DateTime     @updatedAt
+}
+
+model Docente {
+  id                      Int          @id @default(autoincrement())
+  nombres                 String
+  apellidoPaterno         String
+  apellidoMaterno         String
+  correo                  String       @unique
+  telefono                String?
+  materia                 String
+  estatus                 String
+  grupos                  GrupoDocente[]
+  creadoEn                DateTime     @default(now())
+  actualizadoEn           DateTime     @updatedAt
+}
+
+model GrupoDocente {
+  id                      Int      @id @default(autoincrement())
+  grupoId                 Int
+  docenteId               Int
+  materia                 String
+  promedioMateria         Float?
+  desarrolloMateria       String?
+  grupo                   Grupo    @relation(fields: [grupoId], references: [id])
+  docente                 Docente  @relation(fields: [docenteId], references: [id])
+  creadoEn                DateTime @default(now())
+  actualizadoEn           DateTime @updatedAt
+
+  @@unique([grupoId, docenteId, materia])
+}
+
+model Tramite {
+  id                      Int      @id @default(autoincrement())
+  alumnoId                Int
+  alumno                  Alumno   @relation(fields: [alumnoId], references: [id])
+  tipo                    String
+  motivo                  String
+  estatus                 String   @default("Pendiente")
+  observaciones           String?
+  respuestaAdministrador  String?
+  creadoEn               DateTime @default(now())
+  actualizadoEn           DateTime @updatedAt
 }
