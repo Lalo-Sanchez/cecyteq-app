@@ -10,21 +10,23 @@ Este software ha sido diseñado, estructurado y desarrollado íntegramente por e
 
 💻 Omar Camacho Covarrubias: Developer Full Stack y Arquitectura de Software.
 
-📋 Leslye Díaz Gonzalez: Product Owner y Encargada del Área Administrativa.
-
 ✨ Características Principales
 
 🔐 Sistema de Autenticación y Roles
 
 Login Seguro: Verificación de credenciales conectada a una base de datos real.
 
-Control de Acceso (RBAC): Interfaces dinámicas que se adaptan según el rol del usuario:
+Control de Acceso (RBAC Dinámico): Interfaces dinámicas que se adaptan según el rol del usuario:
 
-👑 Administración / Dirección: Acceso total a métricas, servicios escolares y docentes.
+👑 Administración / Dirección: Acceso a métricas y control dinámico de roles administrativos.
 
-👨‍🏫 Docente: Gestión de aula virtual y pase de lista.
+📂 Servicios Escolares / Docentes: Gestión cruzada de expedientes, horarios y plantillas de docentes.
 
-👨‍🎓 Alumno: Visualización de kardex, boletas y aula virtual.
+👨‍🏫 Docente: Gestión de aula virtual, bitácoras de acceso, pase de lista y mesa de calificación dividida.
+
+👨‍🎓 Alumno: Visualización de kardex, horarios y aula virtual interactiva (envío de tareas).
+
+👥 Tutor: Visualización del rendimiento del alumno y módulo de comunicación y citas.
 
 📊 Panel de Control (Dashboard)
 
@@ -68,7 +70,7 @@ Backend: Next.js Server Actions (Rutas API integradas y seguras).
 
 Base de Datos / ORM: Prisma ORM.
 
-Base de Datos (Desarrollo): SQLite.
+Base de Datos (Desarrollo y Producción): PostgreSQL.
 
 📂 Estructura del Proyecto
 
@@ -76,20 +78,19 @@ El proyecto utiliza una arquitectura modular limpia para facilitar el mantenimie
 
 cecyteq-app/
 ├── prisma/
-│   └── schema.prisma        # Esquema y modelos de la Base de Datos
+│ └── schema.prisma # Esquema y modelos de la Base de Datos
 ├── src/
-│   ├── actions/
-│   │   └── auth.ts          # Server Actions (Consultas seguras a BD)
-│   ├── components/
-│   │   └── layout/          # Componentes reutilizables (Sidebar, TopBar)
-│   └── app/                 
-│       ├── page.tsx         # Página principal (Inicio de Sesión)
-│       └── dashboard/       # Área protegida de la plataforma
-│           ├── layout.tsx   # Esqueleto principal (Barras de navegación)
-│           ├── page.tsx     # Panel de control y métricas
-│           └── alumnos/     
-│               └── page.tsx # Módulo de Servicios Escolares y Formulario
-
+│ ├── actions/
+│ │ └── auth.ts # Server Actions (Consultas seguras a BD)
+│ ├── components/
+│ │ └── layout/ # Componentes reutilizables (Sidebar, TopBar)
+│ └── app/  
+│ ├── page.tsx # Página principal (Inicio de Sesión)
+│ └── dashboard/ # Área protegida de la plataforma
+│ ├── layout.tsx # Esqueleto principal (Barras de navegación)
+│ ├── page.tsx # Panel de control y métricas
+│ └── alumnos/  
+│ └── page.tsx # Módulo de Servicios Escolares y Formulario
 
 🚀 Instalación y Configuración Local
 
@@ -101,44 +102,44 @@ git clone <tu-repositorio-url>
 cd cecyteq-app
 npm install
 
-
 2. Configurar Prisma y Base de Datos
 
-Generar el archivo SQLite y sincronizar el esquema de la base de datos:
+Asegúrate de tener PostgreSQL corriendo localmente, ajusta tu archivo `.env` con la cadena de conexión correspondiente, y sincroniza el esquema:
 
-npx prisma db push
-
+npx prisma migrate dev --name init
 
 Generar el cliente de Prisma para que TypeScript lo reconozca:
 
 npx prisma generate
 
-
-3. Crear datos de prueba (Mocks)
-
-Abre el panel visual de la base de datos:
-
-npx prisma studio
-
-
-En el panel de Chrome, agrega un usuario en la tabla Usuario con el correo admin@cecyteq.edu.mx y el rol admin para poder iniciar sesión.
-
-4. Iniciar el servidor de desarrollo
+3. Iniciar el servidor de desarrollo
 
 npm run dev
 
-
 Abre http://localhost:3000 en tu navegador para ver la plataforma en funcionamiento.
 
-🚧 Próximos Pasos (Roadmap)
+🚧 Plan de Implementación (Cronograma de Desarrollo)
 
-[ ] Encriptación de contraseñas con bcrypt.
+### Fase 1: Estructuración y Autenticación
 
-[ ] Módulo completo de asignación de Grupos y Horarios.
+- **Setup del Proyecto:** Configuración de Next.js, Tailwind CSS v4, Prisma y **PostgreSQL**.
+- **Desarrollo:** Implementación del Control de Acceso Basado en Roles (RBAC Dinámico) con permisos granulares para Directores, Servicios Escolares/Docentes, Docentes, Alumnos y Tutores.
+- **UI:** Maquetación del layout principal (Mobile-First) con soporte para modo oscuro.
 
-[ ] Módulo de Trámites (Generación de PDF para Constancias de Estudio).
+### Fase 2: Administración Escolar
 
-[ ] Funcionalidad de integración con cuentas de Google y Apple.
+- **Desarrollo:** Construcción del directorio interactivo optimizado para **1,700 alumnos activos** (distribuidos en 3 generaciones/semestres).
+- **UI/UX:** Motor de búsqueda de alto rendimiento, filtros por generación/grupo y formularios para el Expediente Digital Unificado.
+
+### Fase 3: Gestión Docente y Evaluación
+
+- **Desarrollo:** Módulo "Asistencia a un Clic" (optimizado para móviles), Bitácoras de entrada/salida y "Mesa de Revisión Dividida".
+- **Área Escolar (Aula Virtual):** Módulo para que los docentes asignen tareas, proyectos y avisos a sus grupos.
+
+### Fase 4: Perfil del Alumno y Despliegue
+
+- **Desarrollo:** Interfaz para el alumno (subir tareas, consultar horarios) y Portal para Tutores (seguimiento y comunicación).
+- **Infraestructura:** Pruebas de estrés y salida a entorno de producción.
 
 ⚖️ Licencia y Derechos de Autor
 

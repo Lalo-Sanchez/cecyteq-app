@@ -115,6 +115,7 @@ export default function NuevoAlumnoPage() {
               telefono: alumno.telefono || '',
               direccion: alumno.direccion || '',
               estatus: alumno.estatus,
+              observaciones: alumno.observaciones || '',
               padre1Nombre: alumno.padre1Nombre || '',
               padre1Telefono: alumno.padre1Telefono || '',
               padre1Ocupacion: alumno.padre1Ocupacion || '',
@@ -276,7 +277,7 @@ export default function NuevoAlumnoPage() {
 
             <div className="md:col-span-3">
               <label className="text-xs text-slate-400" htmlFor="observaciones">Observaciones</label>
-              <textarea id="observaciones" value={formData.observaciones} onChange={(e) => setFormData((f) => ({ ...f, observaciones: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded min-h-[84px]" placeholder="Ej. alumno con necesidades especiales, notas importantes..." />
+              <textarea id="observaciones" value={formData.observaciones} onChange={(e) => setFormData((f) => ({ ...f, observaciones: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded min-h-21" placeholder="Ej. alumno con necesidades especiales, notas importantes..." />
             </div>
 
             <div>

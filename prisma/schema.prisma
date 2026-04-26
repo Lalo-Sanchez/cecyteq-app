@@ -3,103 +3,175 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
-// Tu tabla sigue igual
+// ==========================================
+// RBAC Dinámico y Autenticación
+// ==========================================
+
+model Rol {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique // Ej. "Director", "Servicios Escolares", "Docente", "Alumno"
+  descripcion String?
+  permisos    Permiso[]
+  usuarios    Usuario[]
+  creadoEn    DateTime  @default(now())
+}
+
+model Permiso {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique // Ej. "crear_grupo", "ver_metricas", "gestionar_docentes"
+  roles       Rol[]
+}
+
 model Usuario {
   id             Int      @id @default(autoincrement())
-  nombre         String
   email          String   @unique
-  password_hash  String
-  tipo_usuario   String   
-  google_id      String?  
-  apple_id       String?  
-  fecha_creacion DateTime @default(now())
+  passwordHash   String
+  nombreCompleto String
+  estatus        Boolean  @default(true)
+  
+  rolId          Int
+  rol            Rol      @relation(fields: [rolId], references: [id])
+
+  // Perfiles específicos (opcionales dependiendo del rol)
+  docenteId      Int?     @unique
+  docente        Docente? @relation(fields: [docenteId], references: [id])
+
+  alumnoId       Int?     @unique
+  alumno         Alumno?  @relation(fields: [alumnoId], references: [id])
+
+  tutorId        Int?     @unique
+  tutor          Tutor?   @relation(fields: [tutorId], references: [id])
+
+  creadoEn       DateTime @default(now())
+  actualizadoEn  DateTime @updatedAt
+}
+
+// ==========================================
+// Estructura Académica (Generaciones y Grupos)
+// ==========================================
+
+model Generacion {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique // Ej. "Semestre 1", "tprog 2024-2027"
+  activa      Boolean   @default(true) // False si ya egresaron
+  grupos      Grupo[]
+  alumnos     Alumno[]
+  creadoEn    DateTime  @default(now())
+}
+
+model Grupo {
+  id             Int          @id @default(autoincrement())
+  nombre         String       // Ej. "1A", "3B TPROG"
+  turno          String       // Matutino, Vespertino
+  generacionId   Int
+  generacion     Generacion   @relation(fields: [generacionId], references: [id])
+  alumnos        Alumno[]
+  docenteGrupos  GrupoDocente[]
+  creadoEn       DateTime     @default(now())
+  actualizadoEn  DateTime     @updatedAt
+
+  @@unique([nombre, generacionId])
+}
+
+// ==========================================
+// Perfiles de Usuarios
+// ==========================================
+
+model Docente {
+  id              Int             @id @default(autoincrement())
+  nombres         String
+  apellidos       String
+  numeroEmpleado  String          @unique
+  telefono        String?
+  usuario         Usuario?
+  grupos          GrupoDocente[]
+  bitacoras       BitacoraAcceso[]
 }
 
 model Alumno {
   id                        Int      @id @default(autoincrement())
   matricula                 String   @unique
-  correo                    String   @unique
   nombres                   String
-  apellidoPaterno           String
-  apellidoMaterno           String
-  turno                     String
-  grupo                     String
+  apellidos                 String
+  generacionId              Int
+  generacion                Generacion @relation(fields: [generacionId], references: [id])
   grupoId                   Int?
-  grupoRel                  Grupo?   @relation(fields: [grupoId], references: [id])
-  numeroLista               Int
-  edad                      Int?
-  faltas                    Int      @default(0)
-  telefono                  String?
-  direccion                 String?
-  estatus                   String
-  observaciones             String?
-  contactoEmergenciaNombre  String?
-  contactoEmergenciaTelefono String?
-  promedioGlobal            Float?   
-  parcial1                  Float?   
-  parcial2                  Float?   
-  parcial3                  Float?   
-  recuperacion              Float?   
-  extraordinario            Float?   
-  recursamiento             Float?   
-  creadoEn                  DateTime @default(now())
+  grupo                     Grupo?     @relation(fields: [grupoId], references: [id])
+  usuario                   Usuario?
+  tutores                   TutorAlumno[]
+  asistencias               Asistencia[]
+  calificaciones            Calificacion[]
   tramites                  Tramite[]
 }
 
-model Grupo {
-  id                      Int          @id @default(autoincrement())
-  nombre                  String       @unique
-  turno                   String
-  numeroMaterias          Int?         
-  promedioGeneral         Float?
-  desarrolloCalificacion  String?
-  alumnos                 Alumno[]
-  docenteGrupos           GrupoDocente[]
-  creadoEn                DateTime     @default(now())
-  actualizadoEn           DateTime     @updatedAt
+model Tutor {
+  id          Int           @id @default(autoincrement())
+  nombres     String
+  apellidos   String
+  telefono    String?
+  usuario     Usuario?
+  alumnos     TutorAlumno[]
 }
 
-model Docente {
-  id                      Int          @id @default(autoincrement())
-  nombres                 String
-  apellidoPaterno         String
-  apellidoMaterno         String
-  correo                  String       @unique
-  telefono                String?
-  materia                 String
-  estatus                 String
-  grupos                  GrupoDocente[]
-  creadoEn                DateTime     @default(now())
-  actualizadoEn           DateTime     @updatedAt
+model TutorAlumno {
+  tutorId   Int
+  alumnoId  Int
+  tutor     Tutor   @relation(fields: [tutorId], references: [id])
+  alumno    Alumno  @relation(fields: [alumnoId], references: [id])
+
+  @@id([tutorId, alumnoId])
 }
+
+// ==========================================
+// Relaciones y Módulos Adicionales
+// ==========================================
 
 model GrupoDocente {
-  id                      Int      @id @default(autoincrement())
-  grupoId                 Int
-  docenteId               Int
-  materia                 String
-  promedioMateria         Float?
-  desarrolloMateria       String?
-  grupo                   Grupo    @relation(fields: [grupoId], references: [id])
-  docente                 Docente  @relation(fields: [docenteId], references: [id])
-  creadoEn                DateTime @default(now())
-  actualizadoEn           DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  grupoId     Int
+  docenteId   Int
+  materia     String
+  grupo       Grupo    @relation(fields: [grupoId], references: [id])
+  docente     Docente  @relation(fields: [docenteId], references: [id])
 
   @@unique([grupoId, docenteId, materia])
 }
 
+model Asistencia {
+  id          Int      @id @default(autoincrement())
+  alumnoId    Int
+  alumno      Alumno   @relation(fields: [alumnoId], references: [id])
+  fecha       DateTime
+  estado      String   // Presente, Ausente, Retardo, Justificado
+}
+
+model Calificacion {
+  id          Int      @id @default(autoincrement())
+  alumnoId    Int
+  materia     String
+  parcial1    Float?
+  parcial2    Float?
+  parcial3    Float?
+  final       Float?
+  alumno      Alumno   @relation(fields: [alumnoId], references: [id])
+}
+
 model Tramite {
-  id                      Int      @id @default(autoincrement())
-  alumnoId                Int
-  alumno                  Alumno   @relation(fields: [alumnoId], references: [id])
-  tipo                    String
-  motivo                  String
-  estatus                 String   @default("Pendiente")
-  observaciones           String?
-  respuestaAdministrador  String?
-  creadoEn               DateTime @default(now())
-  actualizadoEn           DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  alumnoId    Int
+  alumno      Alumno   @relation(fields: [alumnoId], references: [id])
+  tipo        String
+  estado      String   @default("Pendiente")
+  creadoEn    DateTime @default(now())
+}
+
+model BitacoraAcceso {
+  id          Int      @id @default(autoincrement())
+  docenteId   Int
+  docente     Docente  @relation(fields: [docenteId], references: [id])
+  tipo        String   // Entrada o Salida
+  timestamp   DateTime @default(now())
 }

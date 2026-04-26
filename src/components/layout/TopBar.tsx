@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Bell, Search, UserCircle } from 'lucide-react';
+import { Bell, UserCircle } from 'lucide-react';
 
 export default function TopBar() {
   const [role, setRole] = useState<string | null>(null);
@@ -26,13 +26,8 @@ export default function TopBar() {
 
   return (
     <header className="h-20 border-b border-slate-800/60 bg-slate-950/50 backdrop-blur-md flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20">
-      <div className="flex items-center gap-4 bg-slate-900/50 border border-slate-800 rounded-full px-4 py-2 w-64 md:w-96 focus-within:border-blue-500 transition-colors">
-        <Search className="text-slate-400" size={18} />
-        <input 
-          type="text" 
-          placeholder="Buscar alumnos, clases o trámites..." 
-          className="bg-transparent border-none outline-none text-sm text-slate-200 w-full placeholder-slate-500"
-        />
+      <div className="flex items-center gap-4">
+        {/* Espacio para logo o título si es necesario */}
       </div>
 
       <div className="flex items-center gap-6">

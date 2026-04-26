@@ -1,9 +1,8 @@
-import { defineConfig } from '@prisma/config'
-import "dotenv/config"
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
 
 export default defineConfig({
   datasource: {
-    provider: "sqlite",
-    url: process.env.DATABASE_URL || "file:./dev.db",
-  }
-})
+    url: env("DATABASE_URL"),
+  },
+});
