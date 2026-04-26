@@ -3,32 +3,8 @@
 import React, { useState } from 'react';
 import { GraduationCap, Mail, Lock, CheckCircle } from 'lucide-react';
 
-// --- MOCKS PARA LA VISTA PREVIA (CANVAS) ---
-// NOTA PARA OMAR: En tu VS Code, borra estas dos funciones falsas y usa los imports reales:
-// import { useRouter } from 'next/navigation';
-// import { loginUser } from '../actions/auth';
-
-const useRouter = () => ({
-  push: (path: string) => {
-    window.location.href = `http://localhost:3000${path}`;
-  }
-});
-
-const loginUser = async (email: string, password_hash: string) => {
-  return new Promise<{success: boolean, role?: string, error?: string}>((resolve) => {
-    setTimeout(() => {
-      if (password_hash === '1234') {
-        if (email === 'admin@cecyteq.edu.mx') resolve({ success: true, role: 'admin' });
-        else if (email === 'docente@cecyteq.edu.mx') resolve({ success: true, role: 'docente' });
-        else if (email === 'alumno@cecyteq.edu.mx') resolve({ success: true, role: 'alumno' });
-        else resolve({ success: false, error: 'El correo no existe en la base de datos institucional.' });
-      } else {
-        resolve({ success: false, error: 'Contraseña incorrecta.' });
-      }
-    }, 1000);
-  });
-};
-// --------------------------------------------
+import { useRouter } from 'next/navigation';
+import { loginUser } from '../actions/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -50,6 +26,7 @@ export default function LoginPage() {
         // Guardamos el rol en el almacenamiento local para que las barras de navegación lo lean
         if (typeof window !== 'undefined') {
           localStorage.setItem('userRole', result.role || '');
+          localStorage.setItem('userId', String(result.userId || ''));
         }
         // Redirigimos al usuario al panel de control (donde están las barras)
         router.push('/dashboard');
@@ -67,12 +44,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Efectos visuales de fondo */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="max-w-md w-full bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl relative z-10">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 mb-4">
+          <div className="w-16 h-16 bg-linear-to-br from-emerald-500 to-emerald-700 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30 mb-4">
             <GraduationCap className="text-white w-10 h-10" />
           </div>
           <h1 className="text-3xl font-bold text-white text-center">CECYTEQ</h1>
@@ -100,7 +77,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="usuario@cecyteq.edu.mx"
                 required
-                className="w-full bg-slate-950/50 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                className="w-full bg-slate-950/50 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
               />
             </div>
           </div>
@@ -117,18 +94,18 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full bg-slate-950/50 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                className="w-full bg-slate-950/50 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
               />
             </div>
             <div className="flex justify-end mt-2">
-              <button type="button" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">¿Olvidaste tu contraseña?</button>
+              <button type="button" className="text-xs text-orange-400 hover:text-orange-300 transition-colors">¿Olvidaste tu contraseña?</button>
             </div>
           </div>
 
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex justify-center items-center gap-2 disabled:opacity-70 mt-4"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition-colors shadow-lg shadow-emerald-500/20 flex justify-center items-center gap-2 disabled:opacity-70 mt-4"
           >
             {isLoading ? 'Verificando...' : 'Iniciar Sesión'}
           </button>

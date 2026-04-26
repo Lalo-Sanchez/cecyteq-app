@@ -12,8 +12,8 @@ html {
 body {
   min-height: 100vh;
   background-image:
-    radial-gradient(circle at top left, rgba(14,165,233,0.16), transparent 24%),
-    radial-gradient(circle at 80% 15%, rgba(16,185,129,0.12), transparent 20%),
+    radial-gradient(circle at top left, rgba(241,100,33,0.15), transparent 24%),
+    radial-gradient(circle at 80% 15%, rgba(34,177,76,0.12), transparent 20%),
     linear-gradient(180deg, #07111f 0%, #08151f 48%, #01040a 100%);
   color: #e2e8f0;
   background-attachment: fixed;
@@ -23,12 +23,13 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top left, rgba(56,189,248,0.06), transparent 28%),
-              radial-gradient(circle at 90% 10%, rgba(16,185,129,0.08), transparent 22%),
+  background: radial-gradient(circle at top left, rgba(241,100,33,0.06), transparent 28%),
+              radial-gradient(circle at 90% 10%, rgba(34,177,76,0.08), transparent 22%),
               linear-gradient(180deg, transparent 0%, rgba(15,23,42,0.2) 55%, rgba(2,6,17,0.35) 100%);
   pointer-events: none;
   z-index: -1;
 }
+
 
 * {
   box-sizing: border-box;
@@ -43,7 +44,7 @@ button {
 
 @layer utilities {
   .shadow-glow {
-    box-shadow: 0 28px 90px rgba(15, 23, 42, 0.3);
+    box-shadow: 0 28px 90px rgba(241, 100, 33, 0.1);
   }
   .container-frost {
     background: rgba(15, 23, 42, 0.75);

@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Users, Search, Edit, Trash2, 
-  UserPlus
+  UserPlus, FileDown, GraduationCap
 } from 'lucide-react';
+
 
 // --- TIPOS DE DATOS ---
 type EstatusType = 'Inscrito' | 'Baja Temporal' | 'Baja' | 'Egresado';
@@ -106,6 +107,182 @@ export default function AlumnosPage() {
     });
   };
 
+  const handleExportExcel = () => {
+    if (alumnosOrdenados.length === 0) {
+      alert("No hay alumnos para exportar.");
+      return;
+    }
+
+    const dataToExport = alumnosOrdenados.map((a: Alumno) => ({
+      "Grupo": a.grupo,
+      "No. Lista": a.numeroLista,
+      "Matrícula": a.matricula,
+      "Apellido Paterno": a.apellidoPaterno,
+      "Apellido Materno": a.apellidoMaterno,
+      "Nombres": a.nombres,
+      "Turno": a.turno,
+      "Estatus": a.estatus,
+      "Correo": a.correo
+    }));
+
+    // Importar dinámicamente XLSX solo cuando se requiera (para no afectar carga)
+    import('xlsx').then(XLSX => {
+      const ws = XLSX.utils.json_to_sheet(dataToExport);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Alumnos");
+      XLSX.writeFile(wb, "Reporte_Alumnos_CECYTEQ.xlsx");
+    });
+  };
+
+  // ── Boleta PDF por alumno ──────────────────────────────────────────
+  const generateBoletaPDF = async (alumno: Alumno) => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+
+    // Obtener calificaciones reales del alumno
+    let calificaciones: { id: number; materia: string; parcial1: number | null; parcial2: number | null; parcial3: number | null; final: number | null }[] = [];
+    try {
+      const res = await fetch(`/api/calificaciones?matricula=${alumno.matricula}`);
+      if (res.ok) calificaciones = await res.json();
+    } catch { /* sin calificaciones — tabla vacía */ }
+
+    const hoy = new Date();
+    const dia = hoy.getDate();
+    const mes = hoy.toLocaleDateString('es-MX', { month: 'long' });
+    const anio = hoy.getFullYear();
+    const fechaStr = `Querétaro, Qro., a ${dia} de ${mes} de ${anio}`;
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+
+    // Marca de agua primero (debajo de todo)
+    doc.setTextColor(245, 245, 245);
+    doc.setFontSize(38);
+    doc.setFont('helvetica', 'bold');
+    for (let y = 20; y < H + 20; y += 38) {
+      for (let x = 5; x < W + 20; x += 72) {
+        doc.text('OFICIAL', x, y, { angle: 45, renderingMode: 'fill' });
+      }
+    }
+    doc.setTextColor(40, 40, 40);
+
+    // Encabezado institucional
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.text('COORDINACIÓN DE ORGANISMOS DESCENTRALIZADOS ESTATALES DE CECyTEs', W / 2, 14, { align: 'center' });
+    doc.text('COLEGIO DE ESTUDIOS CIENTÍFICOS Y TECNOLÓGICOS DEL ESTADO QUERÉTARO', W / 2, 18, { align: 'center' });
+    doc.text('CCT PLANTEL CECYTEQ NO. 5 CERRITO COLORADO - QUERÉTARO', W / 2, 22, { align: 'center' });
+    doc.setFontSize(9);
+    doc.text('BOLETA DEL ALUMNO', W / 2, 27, { align: 'center' });
+    doc.setDrawColor(180, 180, 180);
+    doc.line(14, 30, W - 14, 30);
+
+    // Datos del alumno
+    const nombreCompleto = `${alumno.apellidoPaterno} ${alumno.apellidoMaterno} ${alumno.nombres}`;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Alumno(a): ', 14, 36);
+    doc.setFont('helvetica', 'normal');
+    doc.text(nombreCompleto, 14 + doc.getTextWidth('Alumno(a): '), 36);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Bachillerato General: ', 14, 41);
+    doc.setFont('helvetica', 'normal');
+    doc.text('TÉCNICO EN PROGRAMACIÓN', 14 + doc.getTextWidth('Bachillerato General: '), 41);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Grupo: ', 14, 46);
+    doc.setFont('helvetica', 'normal');
+    doc.text(alumno.grupo || '', 14 + doc.getTextWidth('Grupo: '), 46);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Turno: ', 14, 51);
+    doc.setFont('helvetica', 'normal');
+    doc.text(alumno.turno || '', 14 + doc.getTextWidth('Turno: '), 51);
+
+    // Lado derecho
+    doc.setFont('helvetica', 'normal');
+    doc.text(fechaStr, W - 14, 36, { align: 'right' });
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Matrícula: ${alumno.matricula}`, W - 14, 41, { align: 'right' });
+
+    // Tabla de calificaciones con datos reales
+    const body = calificaciones.map((c, i) => {
+      const fin = c.final !== null ? c.final
+        : (c.parcial1 !== null && c.parcial2 !== null && c.parcial3 !== null
+          ? Math.round(((c.parcial1 + c.parcial2 + c.parcial3) / 3) * 10) / 10
+          : null);
+      const estatus = fin === null ? 'En Curso' : fin >= 6 ? 'Aprobado' : 'REPROBADO';
+      return [
+        (i + 1).toString(),
+        c.materia,
+        c.parcial1 !== null ? c.parcial1.toFixed(1) : '',
+        c.parcial2 !== null ? c.parcial2.toFixed(1) : '',
+        c.parcial3 !== null ? c.parcial3.toFixed(1) : '',
+        '', '', // C/EXT, IT/RC
+        fin !== null ? fin.toFixed(1) : '',
+        estatus,
+      ];
+    });
+
+    // Fila de promedios generales
+    if (calificaciones.length > 0) {
+      const finales = calificaciones.map(c => c.final).filter(f => f !== null) as number[];
+      const promedio = finales.length > 0
+        ? (finales.reduce((a, b) => a + b, 0) / finales.length).toFixed(1)
+        : '';
+      body.push(['', 'PROMEDIOS GENERALES', '', '', '', '', '', promedio, '']);
+    }
+
+    autoTable(doc, {
+      startY: 56,
+      head: [['#', 'Asignatura', 'P1', 'P2', 'P3', 'C / EXT', 'IT / RC', 'Final', 'Estatus']],
+      body: body.length > 0 ? body : [['', 'Sin calificaciones registradas', '', '', '', '', '', '', '']],
+      styles: { fontSize: 7, cellPadding: 2, valign: 'middle' },
+      headStyles: { fillColor: [30, 80, 160], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: 7 },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 8 },
+        1: { cellWidth: 'auto' },
+        2: { halign: 'center', cellWidth: 14 },
+        3: { halign: 'center', cellWidth: 14 },
+        4: { halign: 'center', cellWidth: 14 },
+        5: { halign: 'center', cellWidth: 18 },
+        6: { halign: 'center', cellWidth: 18 },
+        7: { halign: 'center', cellWidth: 14, fontStyle: 'bold' },
+        8: { halign: 'center', cellWidth: 22 },
+      },
+      didParseCell(data) {
+        // Reprobados en rojo
+        if (data.column.index === 7 || data.column.index === 8) {
+          const fin = calificaciones[data.row.index]?.final;
+          if (fin !== null && fin !== undefined && fin < 6) {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        }
+        // Fila de promedios en gris
+        if (data.row.index === calificaciones.length) {
+          data.cell.styles.fillColor = [240, 240, 240];
+          data.cell.styles.fontStyle = 'bold';
+        }
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    // Firma
+    const finalY = (doc as any).lastAutoTable?.finalY ?? 160;
+    const firmaY = finalY + 20;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.line(W / 2 - 40, firmaY, W / 2 + 40, firmaY);
+    doc.text('Director(a) del Plantel', W / 2, firmaY + 5, { align: 'center' });
+    doc.text('CECYTEQ No. 5 Cerrito Colorado', W / 2, firmaY + 9, { align: 'center' });
+
+    const nombreArchivo = `Boleta_${alumno.nombres}_${alumno.apellidoPaterno}_${alumno.apellidoMaterno}`
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+      .replace(/_+/g, '_');
+    doc.save(`${nombreArchivo}.pdf`);
+  };
+
   const getEstatusColor = (estatus: EstatusType) => {
     switch(estatus) {
       case 'Inscrito': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
@@ -126,12 +303,20 @@ export default function AlumnosPage() {
           </h2>
           <p className="text-slate-400 text-sm mt-1">Gestión integral de expedientes escolares.</p>
         </div>
-        <Link 
-          href="/dashboard/alumnos/nuevo"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
-        >
-          <UserPlus size={18} /> Nuevo Alumno
-        </Link>
+        <div className="flex gap-2">
+          <button 
+            onClick={handleExportExcel}
+            className="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+          >
+            Exportar Excel
+          </button>
+          <Link 
+            href="/dashboard/alumnos/nuevo"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
+          >
+            <UserPlus size={18} /> Nuevo Alumno
+          </Link>
+        </div>
       </div>
 
       {/* BARRA DE BÚSQUEDA */}
@@ -236,18 +421,32 @@ export default function AlumnosPage() {
                                     <p className="text-slate-200">{alumno.observaciones || 'Ninguna'}</p>
                                   </div>
                                 </div>
-                                <div className="flex gap-3 pt-4 border-t border-slate-700">
+                                <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-700">
                                   <Link 
                                     href={`/dashboard/alumnos/nuevo?id=${alumno.id}`}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                    onClick={e => e.stopPropagation()}
+                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
                                   >
-                                    <Edit size={18} /> Editar
+                                    <Edit size={16} /> Editar
+                                  </Link>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); generateBoletaPDF(alumno); }}
+                                    className="flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    <FileDown size={16} /> Boleta PDF
+                                  </button>
+                                  <Link
+                                    href={`/dashboard/calificaciones?grupo=${alumno.grupo}&alumno=${alumno.matricula}`}
+                                    onClick={e => e.stopPropagation()}
+                                    className="flex items-center gap-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                  >
+                                    <GraduationCap size={16} /> Ver Calificaciones
                                   </Link>
                                   <button 
                                     onClick={(e) => { e.stopPropagation(); handleDelete(alumno); }}
-                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                                    className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ml-auto"
                                   >
-                                    <Trash2 size={18} /> Eliminar
+                                    <Trash2 size={16} /> Eliminar
                                   </button>
                                 </div>
                               </div>

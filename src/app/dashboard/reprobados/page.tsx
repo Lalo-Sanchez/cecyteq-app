@@ -1,33 +1,77 @@
-"use client";
-
 import React from 'react';
-import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 import { AlertTriangle } from 'lucide-react';
+import ReprobadosClient from './ReprobadosClient';
 
-export default function ReprobadosPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ReprobadosPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const resolvedParams = await searchParams;
+  const grupoId = typeof resolvedParams.grupo === 'string' ? resolvedParams.grupo : '';
+
+  // 1. Obtener lista de todos los grupos para el selector
+  const grupos = await prisma.grupo.findMany({
+    select: { id: true, nombre: true },
+    orderBy: { nombre: 'asc' }
+  });
+
+  // 2. Filtro dinámico: Si hay grupo, filtramos, si no, traemos TODOS los reprobados globales
+  // En el caso de reprobados, 1700 alumnos * 0.1 (tasa reprobatoria) = 170 records, lo cual sí es rápido cargar de forma global
+  const whereClause: any = {
+    final: { lt: 6.0 }
+  };
+  
+  if (grupoId) {
+    whereClause.alumno = { grupoId: Number(grupoId) };
+  }
+
+  const reprobados = await prisma.calificacion.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      materia: true,
+      parcial1: true,
+      parcial2: true,
+      parcial3: true,
+      final: true,
+      alumno: {
+        select: {
+          matricula: true,
+          nombres: true,
+          apellidoPaterno: true,
+          apellidoMaterno: true,
+          numeroLista: true,
+          faltas: true,       // necesario para calcular asistencia
+        }
+      }
+    },
+    orderBy: [
+      { alumno: { apellidoPaterno: 'asc' } },
+      { materia: 'asc' }
+    ]
+  });
+
   return (
     <div className="space-y-6">
-      <div className="rounded-[2rem] border border-slate-800/50 bg-slate-950/90 p-8 shadow-glow">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-rose-500/10 text-rose-300">
-            <AlertTriangle size={28} />
-          </div>
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-rose-300/80">Sección de Reprobados</p>
-            <h1 className="text-3xl font-semibold text-white">Reprobados</h1>
-          </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+            <AlertTriangle className="text-red-500" /> Control de Reprobados e Irregulares
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">Alumnos con evaluación final no aprobatoria.</p>
         </div>
-        <p className="mt-4 text-slate-400">Página creada para mostrar los alumnos reprobados por grupo y materia, con información clave para seguimiento y recuperación.</p>
       </div>
 
-      <div className="rounded-[2rem] border border-slate-800/50 bg-slate-950/80 p-6 shadow-glow">
-        <h2 className="text-xl font-semibold text-white">Pendiente</h2>
-        <p className="mt-3 text-slate-400">Aquí se integrarán las tablas y filtros de reprobados, listas por grupo y detalles por alumno.</p>
-        <div className="mt-6 flex gap-3 flex-wrap">
-          <Link href="/dashboard" className="rounded-2xl bg-slate-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700">Volver al dashboard</Link>
-          <Link href="/dashboard/calificaciones" className="rounded-2xl border border-slate-700 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800">Ir a Calificaciones</Link>
-        </div>
-      </div>
+      <ReprobadosClient 
+        grupos={grupos} 
+        reprobados={reprobados} 
+        selectedGrupoId={grupoId}
+        totalReprobadosCount={reprobados.length}
+      />
     </div>
   );
 }

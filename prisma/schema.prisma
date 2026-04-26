@@ -45,6 +45,8 @@ model Usuario {
   tutorId        Int?     @unique
   tutor          Tutor?   @relation(fields: [tutorId], references: [id])
 
+  notificaciones Notificacion[]
+
   creadoEn       DateTime @default(now())
   actualizadoEn  DateTime @updatedAt
 }
@@ -64,16 +66,16 @@ model Generacion {
 
 model Grupo {
   id             Int          @id @default(autoincrement())
-  nombre         String       // Ej. "1A", "3B TPROG"
-  turno          String       // Matutino, Vespertino
-  generacionId   Int
-  generacion     Generacion   @relation(fields: [generacionId], references: [id])
+  nombre         String       @unique
+  turno          String       
+  numeroMaterias Int          @default(0)
+  generacionId   Int?
+  generacion     Generacion?  @relation(fields: [generacionId], references: [id])
   alumnos        Alumno[]
   docenteGrupos  GrupoDocente[]
+  tareas         Tarea[]
   creadoEn       DateTime     @default(now())
   actualizadoEn  DateTime     @updatedAt
-
-  @@unique([nombre, generacionId])
 }
 
 // ==========================================
@@ -89,22 +91,39 @@ model Docente {
   usuario         Usuario?
   grupos          GrupoDocente[]
   bitacoras       BitacoraAcceso[]
+  tareas          Tarea[]
 }
 
 model Alumno {
   id                        Int      @id @default(autoincrement())
   matricula                 String   @unique
+  correo                    String?  @unique
   nombres                   String
-  apellidos                 String
-  generacionId              Int
-  generacion                Generacion @relation(fields: [generacionId], references: [id])
+  apellidos                 String?
+  apellidoPaterno           String   @default("")
+  apellidoMaterno           String   @default("")
+  turno                     String   @default("Matutino")
+  grupo                     String?  
+  numeroLista               Int      @default(1)
+  edad                      Int?
+  faltas                    Int      @default(0)
+  telefono                  String?
+  direccion                 String?
+  estatus                   String   @default("Inscrito")
+  observaciones             String?
+  contactoEmergenciaNombre  String?
+  contactoEmergenciaTelefono String?
+
+  generacionId              Int?
+  generacion                Generacion? @relation(fields: [generacionId], references: [id])
   grupoId                   Int?
-  grupo                     Grupo?     @relation(fields: [grupoId], references: [id])
+  grupoRel                  Grupo?      @relation(fields: [grupoId], references: [id])
   usuario                   Usuario?
   tutores                   TutorAlumno[]
   asistencias               Asistencia[]
   calificaciones            Calificacion[]
   tramites                  Tramite[]
+  entregasTarea             EntregaTarea[]
 }
 
 model Tutor {
@@ -163,8 +182,12 @@ model Tramite {
   id          Int      @id @default(autoincrement())
   alumnoId    Int
   alumno      Alumno   @relation(fields: [alumnoId], references: [id])
-  tipo        String
+  tipo        String?
+  motivo      String?
   estado      String   @default("Pendiente")
+  estatus     String   @default("Pendiente")
+  observaciones String?
+  respuestaAdministrador String?
   creadoEn    DateTime @default(now())
 }
 
@@ -175,3 +198,65 @@ model BitacoraAcceso {
   tipo        String   // Entrada o Salida
   timestamp   DateTime @default(now())
 }
+
+model MateriaCatalogo {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  descripcion String?
+  creditos    Int      @default(0)
+  semestre    Int?
+  creadoEn    DateTime @default(now())
+}
+
+// ==========================================
+// Aula Virtual y Comunicaciones
+// ==========================================
+
+model Tarea {
+  id               Int            @id @default(autoincrement())
+  titulo           String
+  descripcion      String?
+  materia          String         // O relación con MateriaCatalogo
+  fechaVencimiento DateTime?
+  
+  grupoId          Int
+  grupo            Grupo          @relation(fields: [grupoId], references: [id])
+  
+  docenteId        Int
+  docente          Docente        @relation(fields: [docenteId], references: [id])
+  
+  entregas         EntregaTarea[]
+  creadoEn         DateTime       @default(now())
+  actualizadoEn    DateTime       @updatedAt
+}
+
+model EntregaTarea {
+  id               Int      @id @default(autoincrement())
+  tareaId          Int
+  tarea            Tarea    @relation(fields: [tareaId], references: [id])
+  
+  alumnoId         Int
+  alumno           Alumno   @relation(fields: [alumnoId], references: [id])
+  
+  contenido        String?  // Texto de la entrega
+  archivoUrl       String?  // Link al archivo (PDF/Doc)
+  
+  calificacion     Float?
+  retroalimentacion String?
+  
+  entregadoEn      DateTime @default(now())
+  actualizadoEn    DateTime @updatedAt
+
+  @@unique([tareaId, alumnoId])
+}
+
+model Notificacion {
+  id          Int      @id @default(autoincrement())
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  mensaje     String
+  leida       Boolean  @default(false)
+  tipo        String   // Tarea, Calificacion, Aviso, Tramite
+  creadoEn    DateTime @default(now())
+}
+

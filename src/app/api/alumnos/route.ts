@@ -109,124 +109,144 @@ const migrarGruposExistentes = async () => {
 };
 
 export async function GET() {
-  const count = await prisma.alumno.count();
-  if (count === 0) {
-    let matricula = await calcularMatriculaSiguiente();
-    for (const item of seedLista) {
-      const grupoDb = await obtenerGrupoPorNombre(item.grupo, item.turno);
-      await prisma.alumno.create({
-        data: {
-          matricula: matricula.toString(),
-          correo: obtenerCorreo(item.nombres, item.apellidoPaterno),
-          nombres: item.nombres,
-          apellidoPaterno: item.apellidoPaterno,
-          apellidoMaterno: item.apellidoMaterno,
-          turno: item.turno,
-          grupo: item.grupo,
-          grupoId: grupoDb?.id,
-          numeroLista: 1,
-          estatus: 'Inscrito',
-          faltas: 0,
-        }
-      });
-      matricula = matricula + BigInt(1);
+  try {
+    const count = await prisma.alumno.count();
+    if (count === 0) {
+      let matricula = await calcularMatriculaSiguiente();
+      for (const item of seedLista) {
+        const grupoDb = await obtenerGrupoPorNombre(item.grupo, item.turno);
+        await prisma.alumno.create({
+          data: {
+            matricula: matricula.toString(),
+            correo: obtenerCorreo(item.nombres, item.apellidoPaterno),
+            nombres: item.nombres,
+            apellidoPaterno: item.apellidoPaterno,
+            apellidoMaterno: item.apellidoMaterno,
+            turno: item.turno,
+            grupo: item.grupo,
+            grupoId: grupoDb?.id,
+            numeroLista: 1,
+            estatus: 'Inscrito',
+            faltas: 0,
+          }
+        });
+        matricula = matricula + BigInt(1);
+      }
     }
+
+    await migrarGruposExistentes();
+
+    const alumnos = await prisma.alumno.findMany({
+      orderBy: { grupo: 'asc' },
+      include: { grupoRel: true },
+    });
+    return NextResponse.json(alumnos);
+  } catch (error: any) {
+    console.error("Error en GET /api/alumnos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  await migrarGruposExistentes();
-
-  const alumnos = await prisma.alumno.findMany({
-    orderBy: { grupo: 'asc' },
-    include: { grupoRel: true },
-  });
-  return NextResponse.json(alumnos);
 }
 
 export async function POST(request: Request) {
-  const data = await request.json();
-  const matricula = await calcularMatriculaSiguiente();
-  const numeroLista = await obtenerNumeroLista(data.grupo, undefined, data.apellidoPaterno);
+  try {
+    const data = await request.json();
+    const matricula = await calcularMatriculaSiguiente();
+    const numeroLista = await obtenerNumeroLista(data.grupo, undefined, data.apellidoPaterno);
 
-  const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno);
+    const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno);
 
-  const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
+    const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
 
-  const alumno = await prisma.alumno.create({
-    data: {
-      matricula: matricula.toString(),
-      correo,
-      nombres: data.nombres,
-      apellidoPaterno: data.apellidoPaterno,
-      apellidoMaterno: data.apellidoMaterno,
-      turno: data.turno,
-      grupo: data.grupo,
-      grupoId: grupoDb?.id,
-      numeroLista,
-      edad: parseInt(data.edad ?? '0', 10) || null,
-      faltas: Number(data.faltas ?? 0),
-      telefono: data.telefono,
-      direccion: data.direccion,
-      estatus: data.estatus,
-      observaciones: data.observaciones,
-      contactoEmergenciaNombre: data.contactoEmergenciaNombre,
-      contactoEmergenciaTelefono: data.contactoEmergenciaTelefono,
-    }
-  });
+    const alumno = await prisma.alumno.create({
+      data: {
+        matricula: matricula.toString(),
+        correo,
+        nombres: data.nombres,
+        apellidoPaterno: data.apellidoPaterno,
+        apellidoMaterno: data.apellidoMaterno,
+        turno: data.turno,
+        grupo: data.grupo,
+        grupoId: grupoDb?.id,
+        numeroLista,
+        edad: parseInt(data.edad ?? '0', 10) || null,
+        faltas: Number(data.faltas ?? 0),
+        telefono: data.telefono,
+        direccion: data.direccion,
+        estatus: data.estatus,
+        observaciones: data.observaciones,
+        contactoEmergenciaNombre: data.contactoEmergenciaNombre,
+        contactoEmergenciaTelefono: data.contactoEmergenciaTelefono,
+      }
+    });
 
-  // Recalcular números de lista del grupo para todos los alumnos
-  await recalcularNumerosLista(data.grupo);
+    // Recalcular números de lista del grupo para todos los alumnos
+    await recalcularNumerosLista(data.grupo);
 
-  return NextResponse.json(alumno);
+    return NextResponse.json(alumno);
+  } catch (error: any) {
+    console.error("Error en POST /api/alumnos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 export async function PUT(request: Request) {
-  const data = await request.json();
-  
-  // Obtener el alumno actual para saber el grupo anterior
-  const alumnoActual = await prisma.alumno.findUnique({
-    where: { id: Number(data.id) },
-  });
-  
-  const numLista = await obtenerNumeroLista(data.grupo, Number(data.id), data.apellidoPaterno);
-  const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno, Number(data.id));
+  try {
+    const data = await request.json();
+    
+    // Obtener el alumno actual para saber el grupo anterior
+    const alumnoActual = await prisma.alumno.findUnique({
+      where: { id: Number(data.id) },
+    });
+    
+    const numLista = await obtenerNumeroLista(data.grupo, Number(data.id), data.apellidoPaterno);
+    const correo = await obtenerCorreoUnico(data.nombres, data.apellidoPaterno, Number(data.id));
 
-  const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
+    const grupoDb = await obtenerGrupoPorNombre(data.grupo, data.turno);
 
-  const alumno = await prisma.alumno.update({
-    where: { id: Number(data.id) },
-    data: {
-      correo,
-      nombres: data.nombres,
-      apellidoPaterno: data.apellidoPaterno,
-      apellidoMaterno: data.apellidoMaterno,
-      turno: data.turno,
-      grupo: data.grupo,
-      grupoId: grupoDb?.id,
-      numeroLista: numLista,
-      edad: parseInt(data.edad ?? '0', 10) || null,
-      faltas: Number(data.faltas ?? 0),
-      telefono: data.telefono,
-      direccion: data.direccion,
-      estatus: data.estatus,
-      observaciones: data.observaciones,
-      contactoEmergenciaNombre: data.contactoEmergenciaNombre,
-      contactoEmergenciaTelefono: data.contactoEmergenciaTelefono,
+    const alumno = await prisma.alumno.update({
+      where: { id: Number(data.id) },
+      data: {
+        correo,
+        nombres: data.nombres,
+        apellidoPaterno: data.apellidoPaterno,
+        apellidoMaterno: data.apellidoMaterno,
+        turno: data.turno,
+        grupo: data.grupo,
+        grupoId: grupoDb?.id,
+        numeroLista: numLista,
+        edad: parseInt(data.edad ?? '0', 10) || null,
+        faltas: Number(data.faltas ?? 0),
+        telefono: data.telefono,
+        direccion: data.direccion,
+        estatus: data.estatus,
+        observaciones: data.observaciones,
+        contactoEmergenciaNombre: data.contactoEmergenciaNombre,
+        contactoEmergenciaTelefono: data.contactoEmergenciaTelefono,
+      }
+    });
+
+    // Recalcular números de lista del grupo nuevo
+    await recalcularNumerosLista(data.grupo);
+    
+    // Si el grupo cambió, también recalcular el grupo anterior
+    if (alumnoActual && alumnoActual.grupo && alumnoActual.grupo !== data.grupo) {
+      await recalcularNumerosLista(alumnoActual.grupo);
     }
-  });
 
-  // Recalcular números de lista del grupo nuevo
-  await recalcularNumerosLista(data.grupo);
-  
-  // Si el grupo cambió, también recalcular el grupo anterior
-  if (alumnoActual && alumnoActual.grupo !== data.grupo) {
-    await recalcularNumerosLista(alumnoActual.grupo);
+    return NextResponse.json(alumno);
+  } catch (error: any) {
+    console.error("Error en PUT /api/alumnos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  return NextResponse.json(alumno);
 }
 
 export async function DELETE(request: Request) {
-  const { id } = await request.json();
-  await prisma.alumno.delete({ where: { id: Number(id) } });
-  return NextResponse.json({ deletedId: id });
+  try {
+    const { id } = await request.json();
+    await prisma.alumno.delete({ where: { id: Number(id) } });
+    return NextResponse.json({ deletedId: id });
+  } catch (error: any) {
+    console.error("Error en DELETE /api/alumnos:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
