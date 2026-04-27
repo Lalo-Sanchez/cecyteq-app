@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { GraduationCap, Users, AlertCircle } from 'lucide-react';
+import { GraduationCap, Users, AlertCircle, ArrowLeft, Save } from 'lucide-react';
 
 const PROGRAMAS_MATUTINO = [
   'TPROG-AM', 'TPGA-AM', 'TTPLAS-AM', 'TMECA-AM', 'TMECA-AMBI',
@@ -90,6 +90,7 @@ export default function NuevoAlumnoPage() {
   });
   const [matricula, setMatricula] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('id');
@@ -138,6 +139,8 @@ export default function NuevoAlumnoPage() {
         }
       } catch (error) {
         console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
       }
     };
     load();
@@ -215,131 +218,175 @@ export default function NuevoAlumnoPage() {
     router.push('/dashboard/alumnos');
   };
 
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-bg-main">
+      <div className="w-10 h-10 border-4 border-cecyteq-green border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+
   return (
-    <div className="p-6 bg-slate-950 min-h-screen">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">{isEditing ? 'Editar Alumno' : 'Registrar Alumno'}</h1>
-        <Link href="/dashboard/alumnos" className="text-sm px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-100">Regresar a Listado</Link>
+    <div className="min-h-screen bg-bg-main p-6 lg:p-10 animate-fadeInUp">
+      <div className="max-w-5xl mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="space-y-2">
+            <Link href="/dashboard/alumnos" className="inline-flex items-center gap-2 text-text-secondary hover:text-cecyteq-green transition-colors text-xs font-black uppercase tracking-widest mb-2">
+              <ArrowLeft size={14} /> Volver al listado
+            </Link>
+            <h1 className="text-4xl font-black text-text-primary tracking-tight">
+              {isEditing ? 'Editar Expediente' : 'Nuevo Ingreso'}
+            </h1>
+            <p className="text-text-secondary font-medium">Completa la información institucional para dar de alta al alumno.</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* SECCIÓN 1: DATOS PERSONALES */}
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-8 shadow-glow">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-cecyteq-green/10 rounded-xl flex items-center justify-center text-cecyteq-green">
+                <GraduationCap size={20} />
+              </div>
+              <h2 className="text-xl font-black text-text-primary tracking-tight uppercase">1. Información del Alumno</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Nombre(s)*</label>
+                <input value={formData.nombres} onChange={(e) => setFormData((f) => ({ ...f, nombres: e.target.value }))} required className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Apellido Paterno*</label>
+                <input value={formData.apellidoPaterno} onChange={(e) => setFormData((f) => ({ ...f, apellidoPaterno: e.target.value }))} required className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Apellido Materno*</label>
+                <input value={formData.apellidoMaterno} onChange={(e) => setFormData((f) => ({ ...f, apellidoMaterno: e.target.value }))} required className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Turno*</label>
+                <select value={formData.turno} onChange={(e) => setFormData((f) => ({ ...f, turno: e.target.value as TurnoType, grupo: '' }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold appearance-none">
+                  <option value="Matutino">Matutino</option>
+                  <option value="Vespertino">Vespertino</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Grupo Asignado*</label>
+                <select value={formData.grupo} onChange={(e) => setFormData((f) => ({ ...f, grupo: e.target.value }))} required className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold appearance-none">
+                  <option value="">Seleccione grupo</option>
+                  {obtenerGruposPorTurno(formData.turno).map((g) => (<option key={g} value={g}>{g}</option>))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Edad</label>
+                <input type="number" value={formData.edad} min={14} max={99} onChange={(e) => setFormData((f) => ({ ...f, edad: Number(e.target.value) }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+              </div>
+
+              <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Teléfono</label>
+                  <input value={formData.telefono} onChange={(e) => setFormData((f) => ({ ...f, telefono: e.target.value }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Estatus Escolar</label>
+                  <select value={formData.estatus} onChange={(e) => setFormData((f) => ({ ...f, estatus: e.target.value as EstatusType }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold appearance-none">
+                    <option value="Inscrito">Inscrito</option>
+                    <option value="Baja Temporal">Baja Temporal</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Egresado">Egresado</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="md:col-span-3 space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Dirección Completa</label>
+                <input value={formData.direccion} onChange={(e) => setFormData((f) => ({ ...f, direccion: e.target.value }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-3.5 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold" />
+              </div>
+
+              <div className="md:col-span-3 space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Observaciones Académicas</label>
+                <textarea value={formData.observaciones} onChange={(e) => setFormData((f) => ({ ...f, observaciones: e.target.value }))} className="w-full bg-bg-main border border-border-subtle text-text-primary p-4 rounded-2xl outline-none focus:border-cecyteq-green transition-all font-bold min-h-[100px] resize-none" placeholder="Escribe notas relevantes aquí..." />
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col md:flex-row gap-4 p-6 bg-bg-main rounded-3xl border border-border-subtle">
+              <div className="flex-1 space-y-1">
+                <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest">Matrícula (Sistema)</p>
+                <p className="text-xl font-black text-cecyteq-green tracking-wider">{matricula}</p>
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest">Correo Institucional</p>
+                <p className="text-xl font-black text-cecyteq-orange tracking-tight">{mano}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* SECCIÓN 2: TUTORES */}
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-8 shadow-glow">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-cecyteq-orange/10 rounded-xl flex items-center justify-center text-cecyteq-orange">
+                <Users size={20} />
+              </div>
+              <h2 className="text-xl font-black text-text-primary tracking-tight uppercase">2. Datos de Tutores</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4 p-6 bg-bg-main rounded-[1.5rem] border border-border-subtle">
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-4">Tutor Principal</p>
+                <input placeholder="Nombre Completo" value={formData.padre1Nombre} onChange={(e) => setFormData((f) => ({ ...f, padre1Nombre: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+                <input placeholder="Teléfono de contacto" value={formData.padre1Telefono} onChange={(e) => setFormData((f) => ({ ...f, padre1Telefono: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+                <input placeholder="Ocupación" value={formData.padre1Ocupacion} onChange={(e) => setFormData((f) => ({ ...f, padre1Ocupacion: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+              </div>
+              <div className="space-y-4 p-6 bg-bg-main rounded-[1.5rem] border border-border-subtle">
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-secondary mb-4">Tutor Secundario</p>
+                <input placeholder="Nombre Completo" value={formData.padre2Nombre} onChange={(e) => setFormData((f) => ({ ...f, padre2Nombre: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+                <input placeholder="Teléfono de contacto" value={formData.padre2Telefono} onChange={(e) => setFormData((f) => ({ ...f, padre2Telefono: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+                <input placeholder="Ocupación" value={formData.padre2Ocupacion} onChange={(e) => setFormData((f) => ({ ...f, padre2Ocupacion: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-orange transition-all font-bold" />
+              </div>
+            </div>
+          </div>
+
+          {/* SECCIÓN 3: EMERGENCIA */}
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-8 shadow-glow">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-400">
+                <AlertCircle size={20} />
+              </div>
+              <h2 className="text-xl font-black text-text-primary tracking-tight uppercase">3. Protocolo de Emergencia</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex flex-wrap gap-4">
+                {['padre1', 'padre2', 'otro'].map((tipo) => (
+                  <label key={tipo} className={`cursor-pointer px-6 py-3 rounded-2xl border-2 transition-all flex items-center gap-2 ${formData.contactoEmergenciaTipo === tipo ? 'bg-red-500/10 border-red-500 text-red-400 font-black' : 'bg-bg-main border-border-subtle text-text-secondary font-bold hover:border-text-secondary'}`}>
+                    <input type="radio" name="contactoEmergenciaTipo" value={tipo} checked={formData.contactoEmergenciaTipo === tipo} onChange={(e) => setFormData((f) => ({ ...f, contactoEmergenciaTipo: e.target.value as 'padre1' | 'padre2' | 'otro' }))} className="hidden" />
+                    <span className="text-xs uppercase tracking-widest">{tipo === 'padre1' ? 'Tutor 1' : tipo === 'padre2' ? 'Tutor 2' : 'Otra Persona'}</span>
+                  </label>
+                ))}
+              </div>
+
+              {formData.contactoEmergenciaTipo === 'otro' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-bg-main rounded-3xl border border-red-500/20 animate-fadeIn">
+                  <input placeholder="Nombre" value={formData.otroNombre} onChange={(e) => setFormData((f) => ({ ...f, otroNombre: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                  <input placeholder="Apellidos" value={formData.otroApellidos} onChange={(e) => setFormData((f) => ({ ...f, otroApellidos: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                  <input placeholder="Parentesco" value={formData.otroParentesco} onChange={(e) => setFormData((f) => ({ ...f, otroParentesco: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                  <input placeholder="Teléfono" value={formData.otroTelefono} onChange={(e) => setFormData((f) => ({ ...f, otroTelefono: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                  <input placeholder="Ocupación" value={formData.otroOcupacion} onChange={(e) => setFormData((f) => ({ ...f, otroOcupacion: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-end gap-4 pt-6">
+            <Link href="/dashboard/alumnos" className="px-10 py-4 rounded-2xl border border-border-subtle text-text-secondary font-black uppercase tracking-widest hover:bg-bg-surface transition-all text-center">
+              Cancelar
+            </Link>
+            <button type="submit" className="px-12 py-4 rounded-2xl bg-cecyteq-green text-white font-black uppercase tracking-widest shadow-lg shadow-cecyteq-green/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+              <Save size={18} /> {isEditing ? 'Guardar Cambios' : 'Registrar Alumno'}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
-        <section className="border border-slate-800 rounded-2xl p-4">
-          <h2 className="text-sm font-bold text-blue-300 uppercase tracking-wide mb-4 flex items-center gap-2"><GraduationCap size={16} /> 1. Datos del Alumno</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="nombres">Nombre(s)*</label>
-              <input id="nombres" value={formData.nombres} onChange={(e) => setFormData((f) => ({ ...f, nombres: e.target.value }))} required className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="apellidoPaterno">Apellido Paterno*</label>
-              <input id="apellidoPaterno" value={formData.apellidoPaterno} onChange={(e) => setFormData((f) => ({ ...f, apellidoPaterno: e.target.value }))} required className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="apellidoMaterno">Apellido Materno*</label>
-              <input id="apellidoMaterno" value={formData.apellidoMaterno} onChange={(e) => setFormData((f) => ({ ...f, apellidoMaterno: e.target.value }))} required className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="turno">Turno*</label>
-              <select id="turno" value={formData.turno} onChange={(e) => setFormData((f) => ({ ...f, turno: e.target.value as TurnoType, grupo: '' }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded">
-                <option value="Matutino">Matutino</option>
-                <option value="Vespertino">Vespertino</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="grupo">Grupo*</label>
-              <select id="grupo" value={formData.grupo} onChange={(e) => setFormData((f) => ({ ...f, grupo: e.target.value }))} required className="w-full bg-slate-800 text-slate-200 p-2 rounded">
-                <option value="">Seleccione grupo</option>
-                {obtenerGruposPorTurno(formData.turno).map((g) => (<option key={g} value={g}>{g}</option>))}
-              </select>
-            </div>
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="edad">Edad</label>
-              <input id="edad" type="number" value={formData.edad} min={14} max={99} onChange={(e) => setFormData((f) => ({ ...f, edad: Number(e.target.value) }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="telefono">Teléfono</label>
-              <input id="telefono" value={formData.telefono} onChange={(e) => setFormData((f) => ({ ...f, telefono: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div className="md:col-span-3">
-              <label className="text-xs text-slate-400" htmlFor="direccion">Dirección</label>
-              <input id="direccion" value={formData.direccion} onChange={(e) => setFormData((f) => ({ ...f, direccion: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div className="md:col-span-3">
-              <label className="text-xs text-slate-400" htmlFor="estatus">Estatus</label>
-              <select id="estatus" value={formData.estatus} onChange={(e) => setFormData((f) => ({ ...f, estatus: e.target.value as EstatusType }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded">
-                <option value="Inscrito">Inscrito</option>
-                <option value="Baja Temporal">Baja Temporal</option>
-                <option value="Baja">Baja</option>
-                <option value="Egresado">Egresado</option>
-              </select>
-            </div>
-
-            <div className="md:col-span-3">
-              <label className="text-xs text-slate-400" htmlFor="observaciones">Observaciones</label>
-              <textarea id="observaciones" value={formData.observaciones} onChange={(e) => setFormData((f) => ({ ...f, observaciones: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded min-h-21" placeholder="Ej. alumno con necesidades especiales, notas importantes..." />
-            </div>
-
-            <div>
-              <label className="text-xs text-slate-400" htmlFor="matricula">Matrícula (auto generada)</label>
-              <input id="matricula" type="text" value={matricula} readOnly className="w-full bg-slate-700 text-slate-300 p-2 rounded cursor-not-allowed font-mono" />
-            </div>
-            <div className="md:col-span-2">
-              <label className="text-xs text-slate-400" htmlFor="correo">Correo Institucional (auto generado)</label>
-              <input id="correo" type="email" value={mano} readOnly className="w-full bg-slate-700 text-slate-300 p-2 rounded cursor-not-allowed" />
-            </div>
-          </div>
-        </section>
-
-        <section className="border border-slate-800 rounded-2xl p-4">
-          <h2 className="text-sm font-bold text-emerald-300 uppercase tracking-wide mb-4 flex items-center gap-2"><Users size={16} /> 2. Datos de Padres/Tutores</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
-              <p className="text-xs font-semibold text-slate-400 mb-2">Tutor 1</p>
-              <input placeholder="Nombre" value={formData.padre1Nombre} onChange={(e) => setFormData((f) => ({ ...f, padre1Nombre: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded mb-2" />
-              <input placeholder="Teléfono" value={formData.padre1Telefono} onChange={(e) => setFormData((f) => ({ ...f, padre1Telefono: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded mb-2" />
-              <input placeholder="Ocupación" value={formData.padre1Ocupacion} onChange={(e) => setFormData((f) => ({ ...f, padre1Ocupacion: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-            <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
-              <p className="text-xs font-semibold text-slate-400 mb-2">Tutor 2</p>
-              <input placeholder="Nombre" value={formData.padre2Nombre} onChange={(e) => setFormData((f) => ({ ...f, padre2Nombre: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded mb-2" />
-              <input placeholder="Teléfono" value={formData.padre2Telefono} onChange={(e) => setFormData((f) => ({ ...f, padre2Telefono: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded mb-2" />
-              <input placeholder="Ocupación" value={formData.padre2Ocupacion} onChange={(e) => setFormData((f) => ({ ...f, padre2Ocupacion: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-          </div>
-        </section>
-
-        <section className="border border-slate-800 rounded-2xl p-4">
-          <h2 className="text-sm font-bold text-red-300 uppercase tracking-wide mb-4 flex items-center gap-2"><AlertCircle size={16} /> 3. Contacto de Emergencia</h2>
-          <div className="flex flex-wrap gap-3 mb-4">
-            {['padre1', 'padre2', 'otro'].map((tipo) => (
-              <label key={tipo} className={`cursor-pointer px-3 py-2 rounded-xl border ${formData.contactoEmergenciaTipo === tipo ? 'bg-red-500/10 border-red-500 text-red-300' : 'bg-slate-950 border-slate-700 text-slate-300'}`}>
-                <input type="radio" name="contactoEmergenciaTipo" value={tipo} checked={formData.contactoEmergenciaTipo === tipo} onChange={(e) => setFormData((f) => ({ ...f, contactoEmergenciaTipo: e.target.value as 'padre1' | 'padre2' | 'otro' }))} className="hidden" />
-                <span className="text-xs">{tipo === 'padre1' ? 'Padre/Tutor 1' : tipo === 'padre2' ? 'Padre/Tutor 2' : 'Otro'}</span>
-              </label>
-            ))}
-          </div>
-          {formData.contactoEmergenciaTipo === 'otro' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input placeholder="Nombre" value={formData.otroNombre} onChange={(e) => setFormData((f) => ({ ...f, otroNombre: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-              <input placeholder="Apellidos" value={formData.otroApellidos} onChange={(e) => setFormData((f) => ({ ...f, otroApellidos: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-              <input placeholder="Parentesco" value={formData.otroParentesco} onChange={(e) => setFormData((f) => ({ ...f, otroParentesco: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-              <input placeholder="Teléfono" value={formData.otroTelefono} onChange={(e) => setFormData((f) => ({ ...f, otroTelefono: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-              <input placeholder="Ocupación" value={formData.otroOcupacion} onChange={(e) => setFormData((f) => ({ ...f, otroOcupacion: e.target.value }))} className="w-full bg-slate-800 text-slate-200 p-2 rounded" />
-            </div>
-          )}
-        </section>
-
-        <div className="flex justify-between items-center">
-          <p className="text-xs text-slate-400">Matrícula (oculta): {matricula}</p>
-          <p className="text-xs text-slate-400">Correo (oculto): {mano}</p>
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Guardar y regresar</button>
-          <Link href="/dashboard/alumnos" className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded">Cancelar</Link>
-        </div>
-      </form>
     </div>
   );
 }

@@ -33,48 +33,48 @@ export default function CalificarEntregaForm({ entrega }: Props) {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-white border border-cyan-500/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+        className="bg-cecyteq-green/10 hover:bg-cecyteq-green text-cecyteq-green hover:text-white border border-cecyteq-green/20 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
       >
         Revisar
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-glow overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
+        <div className="fixed inset-0 bg-bg-main/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] w-full max-w-lg shadow-glow overflow-hidden animate-scaleIn">
+            <div className="p-8 border-b border-border-subtle flex justify-between items-center bg-bg-main/50">
               <div>
-                <h3 className="text-xl font-bold text-white">Revisión de Entrega</h3>
-                <p className="text-xs text-slate-400 mt-1">{entrega.alumno.apellidoPaterno} {entrega.alumno.nombres}</p>
+                <h3 className="text-2xl font-black text-text-primary tracking-tight uppercase">Calificar Entrega</h3>
+                <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1">{entrega.alumno.apellidoPaterno} {entrega.alumno.nombres}</p>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white transition-colors">
-                <X size={24} />
+              <button onClick={() => setIsOpen(false)} className="w-10 h-10 bg-bg-surface border border-border-subtle rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-8 space-y-8">
               <div>
-                <p className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-3">Contenido de la entrega</p>
-                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-sm text-slate-300 max-h-40 overflow-y-auto whitespace-pre-wrap">
-                  {entrega.contenido || 'Sin contenido de texto.'}
+                <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mb-4 ml-1">Contenido Recibido</p>
+                <div className="bg-bg-main border border-border-subtle rounded-2xl p-5 text-sm text-text-primary font-medium max-h-48 overflow-y-auto whitespace-pre-wrap shadow-inner leading-relaxed">
+                  {entrega.contenido || 'Sin contenido de texto registrado por el alumno.'}
                 </div>
                 {entrega.archivoUrl && (
                   <a 
                     href={entrega.archivoUrl} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="mt-3 flex items-center gap-2 text-cyan-400 hover:text-cyan-300 text-xs font-bold transition-colors"
+                    className="mt-4 flex items-center gap-2 text-cecyteq-orange hover:text-cecyteq-orange/80 text-[10px] font-black uppercase tracking-widest transition-all w-fit px-2"
                   >
-                    <ExternalLink size={14} /> Ver archivo adjunto
+                    <ExternalLink size={14} /> Abrir archivo adjunto
                   </a>
                 )}
               </div>
 
-              <form onSubmit={handleSave} className="space-y-4 pt-4 border-t border-slate-800">
+              <form onSubmit={handleSave} className="space-y-6 pt-8 border-t border-border-subtle">
                 <div className="flex gap-4 items-center">
                   <div className="flex-1">
-                    <label className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-2 block">Calificación (0-10)</label>
+                    <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest mb-3 ml-1 block">Nota Final (0.0 - 10.0)</label>
                     <div className="relative">
-                      <Star className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" size={16} />
+                      <Star className="absolute left-4 top-1/2 -translate-y-1/2 text-cecyteq-orange" size={18} />
                       <input 
                         type="number" 
                         min="0" 
@@ -82,40 +82,40 @@ export default function CalificarEntregaForm({ entrega }: Props) {
                         step="0.1"
                         value={calificacion}
                         onChange={e => setCalificacion(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-white text-lg font-bold outline-none focus:ring-1 focus:ring-amber-500/50"
-                        placeholder="10.0"
+                        className="w-full bg-bg-main border border-border-subtle rounded-2xl pl-12 pr-6 py-4 text-text-primary text-xl font-black outline-none focus:border-cecyteq-orange transition-all"
+                        placeholder="0.0"
                         required
                       />
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs text-slate-500 uppercase font-bold tracking-widest mb-2 block">Retroalimentación</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest mb-3 ml-1 block">Retroalimentación del Docente</label>
                   <textarea 
                     value={retro}
                     onChange={e => setRetro(e.target.value)}
-                    rows={3}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500/50 resize-none"
-                    placeholder="Buen trabajo, sigue así..."
+                    rows={4}
+                    className="w-full bg-bg-main border border-border-subtle rounded-2xl px-5 py-4 text-sm text-text-primary font-medium outline-none focus:border-cecyteq-green transition-all resize-none shadow-inner"
+                    placeholder="Escribe comentarios para el estudiante..."
                   />
                 </div>
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-4 pt-4">
                   <button 
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-2xl text-sm font-bold transition-colors"
+                    className="flex-1 bg-bg-main border border-border-subtle text-text-secondary py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                   >
-                    Cancelar
+                    Cerrar
                   </button>
                   <button 
                     type="submit"
                     disabled={isPending}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+                    className="flex-[1.5] bg-cecyteq-green hover:bg-cecyteq-green/90 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg shadow-cecyteq-green/20 hover:scale-[1.02]"
                   >
                     {isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                    {isPending ? 'Guardando...' : 'Guardar Nota'}
+                    {isPending ? 'Guardando...' : 'Asignar Calificación'}
                   </button>
                 </div>
               </form>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen } from 'lucide-react';
@@ -186,53 +186,53 @@ export default function TramitesPage() {
 
   return (
     <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-10">
-      <div className="mx-auto max-w-6xl animate-fadeInUp rounded-[2rem] border border-slate-800/60 bg-slate-950/80 p-8 shadow-glow backdrop-blur-xl">
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-800/50 bg-slate-950/95 p-8 shadow-[0_25px_90px_rgba(14,165,233,0.10)]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.14),transparent_18%)] opacity-80" />
+      <div className="mx-auto max-w-6xl animate-fadeInUp rounded-[2rem] border border-border-subtle bg-bg-surface/80 p-8 shadow-glow backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-border-subtle bg-bg-main p-8 shadow-[0_25px_90px_rgba(59,166,74,0.05)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,166,74,0.1),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(240,108,34,0.08),transparent_18%)] opacity-80" />
           <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-cyan-300/80">Panel escolar</p>
-              <h2 className="text-3xl md:text-4xl font-semibold text-white flex items-center gap-3">
-                <BookOpen className="text-cyan-400" /> Trámites Escolares
+              <p className="text-sm uppercase tracking-[0.3em] text-cecyteq-green/80 font-bold">Panel escolar</p>
+              <h2 className="text-3xl md:text-4xl font-black text-text-primary flex items-center gap-3 tracking-tighter">
+                <BookOpen className="text-cecyteq-green" /> Trámites Escolares
               </h2>
-              <p className="mt-3 max-w-2xl text-slate-300">Gestiona solicitudes de kardex, constancias y cambios de turno con una experiencia visual e intuitiva.</p>
+              <p className="mt-3 max-w-2xl text-text-secondary font-medium">Gestiona solicitudes de kardex, constancias y cambios de turno con una experiencia visual e intuitiva.</p>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
-              <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-4 py-3 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-900">
-                <p className="text-slate-400">Solicitudes</p>
-                <p className="mt-1 text-xl font-semibold text-cyan-300">{tramites.length}</p>
+              <div className="rounded-3xl border border-border-subtle bg-bg-surface px-4 py-3 text-text-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-bg-surface/80">
+                <p className="text-text-secondary text-xs font-bold uppercase tracking-wider">Solicitudes</p>
+                <p className="mt-1 text-xl font-black text-cecyteq-green">{tramites.length}</p>
               </div>
-              <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-4 py-3 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-900">
-                <p className="text-slate-400">Alumnos</p>
-                <p className="mt-1 text-xl font-semibold text-emerald-300">{alumnos.length}</p>
+              <div className="rounded-3xl border border-border-subtle bg-bg-surface px-4 py-3 text-text-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-bg-surface/80">
+                <p className="text-text-secondary text-xs font-bold uppercase tracking-wider">Alumnos</p>
+                <p className="mt-1 text-xl font-black text-cecyteq-green">{alumnos.length}</p>
               </div>
-              <div className="rounded-3xl border border-slate-800/70 bg-slate-900/80 px-4 py-3 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-900">
-                <p className="text-slate-400">Generados</p>
-                <p className="mt-1 text-xl font-semibold text-emerald-300">{generados}</p>
+              <div className="rounded-3xl border border-border-subtle bg-bg-surface px-4 py-3 text-text-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-bg-surface/80">
+                <p className="text-text-secondary text-xs font-bold uppercase tracking-wider">Generados</p>
+                <p className="mt-1 text-xl font-black text-cecyteq-orange">{generados}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 rounded-[1.75rem] border border-slate-800/50 bg-slate-950/80 p-6 shadow-glow animate-fadeInUp">
+        <div className="mt-8 rounded-[1.75rem] border border-border-subtle bg-bg-main/50 p-6 shadow-glow animate-fadeInUp">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div>
-              <h3 className="text-xl font-semibold text-white">Solicitudes de trámite</h3>
-              <p className="text-slate-400 text-sm">Crea nuevo trámite o revisa las solicitudes existentes.</p>
+              <h3 className="text-xl font-bold text-text-primary">Solicitudes de trámite</h3>
+              <p className="text-text-secondary text-sm">Crea nuevo trámite o revisa las solicitudes existentes.</p>
             </div>
             <button
               onClick={() => setModoNuevo((prev) => !prev)}
-              className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-white transition hover:scale-[1.02] hover:shadow-[0_12px_30px_rgba(34,211,238,0.35)]"
+              className="rounded-2xl bg-cecyteq-orange px-6 py-2.5 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:scale-[1.02] hover:shadow-lg hover:shadow-cecyteq-orange/20"
             >
-              {modoNuevo ? 'Cerrar nuevo trámite' : 'Nuevo trámite'}
+              {modoNuevo ? 'Cerrar' : 'Nuevo trámite'}
             </button>
           </div>
 
           {modoNuevo && (
-            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-5 space-y-6 shadow-sm">
+            <div className="bg-bg-surface border border-border-subtle rounded-3xl p-6 space-y-6 shadow-inner">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Grupo</label>
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-[0.15em] ml-1">Grupo</label>
                   <select
                     value={selectedGroup}
                     onChange={(e) => {
@@ -240,7 +240,7 @@ export default function TramitesPage() {
                       setMatriculaBuscada('');
                       setSelectedAlumnoId('');
                     }}
-                    className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
+                    className="mt-2 w-full rounded-2xl border border-border-subtle bg-bg-main px-4 py-3 text-text-primary outline-none transition focus:border-cecyteq-green"
                   >
                     <option value="">Todos los grupos</option>
                     {grupos.map((g) => (
@@ -250,7 +250,7 @@ export default function TramitesPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Buscar alumno por matrícula</label>
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-[0.15em] ml-1">Buscar por matrícula</label>
                   <input
                     type="text"
                     value={matriculaBuscada}
@@ -258,15 +258,15 @@ export default function TramitesPage() {
                       setMatriculaBuscada(e.target.value);
                       setSelectedAlumnoId('');
                     }}
-                    className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
+                    className="mt-2 w-full rounded-2xl border border-border-subtle bg-bg-main px-4 py-3 text-text-primary outline-none transition focus:border-cecyteq-green"
                     placeholder="Ej. 23422070050218"
                   />
                 </div>
               </div>
 
               {matriculaBuscada.trim() && (
-                <div className="rounded-3xl border border-slate-800/60 bg-slate-950/90 p-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 mb-3">Resultados</p>
+                <div className="rounded-3xl border border-border-subtle bg-bg-main/90 p-4">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary mb-3 ml-1">Resultados</p>
                   <div className="space-y-2 max-h-52 overflow-auto pr-1">
                     {alumnosFiltrados.length > 0 ? (
                       alumnosFiltrados.map((a) => (
@@ -276,25 +276,25 @@ export default function TramitesPage() {
                             setSelectedAlumnoId(String(a.id));
                             setMatriculaBuscada(a.matricula);
                           }}
-                          className="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-left text-white transition hover:border-cyan-400 hover:bg-slate-800"
+                          className="w-full rounded-2xl border border-border-subtle bg-bg-surface px-4 py-3 text-left text-text-primary transition hover:border-cecyteq-green hover:bg-bg-surface/80"
                         >
-                          <p className="text-sm font-medium text-cyan-200">{a.matricula}</p>
-                          <p className="text-xs text-slate-400">{a.apellidoPaterno} {a.apellidoMaterno}, {a.nombres} · {a.grupo}</p>
+                          <p className="text-sm font-black text-cecyteq-green">{a.matricula}</p>
+                          <p className="text-xs text-text-secondary font-medium">{a.apellidoPaterno} {a.apellidoMaterno}, {a.nombres} · {a.grupo}</p>
                         </button>
                       ))
                     ) : (
-                      <p className="text-sm text-slate-500">No se encontraron alumnos con esa matrícula.</p>
+                      <p className="text-sm text-text-secondary p-2">No se encontraron alumnos con esa matrícula.</p>
                     )}
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Alumno</label>
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-[0.15em] ml-1">Alumno Seleccionado</label>
                 <select
                   value={selectedAlumnoId}
                   onChange={(e) => setSelectedAlumnoId(e.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
+                  className="mt-2 w-full rounded-2xl border border-border-subtle bg-bg-main px-4 py-3 text-text-primary outline-none transition focus:border-cecyteq-green"
                   disabled={alumnosFiltrados.length === 0}
                 >
                   <option value="">Selecciona alumno</option>
@@ -307,11 +307,11 @@ export default function TramitesPage() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Tipo de trámite</label>
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-[0.15em] ml-1">Tipo de trámite</label>
                 <select
                   value={tipoTramite}
                   onChange={(e) => setTipoTramite(e.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
+                  className="mt-2 w-full rounded-2xl border border-border-subtle bg-bg-main px-4 py-3 text-text-primary outline-none transition focus:border-cecyteq-green"
                 >
                   <option value="Kardex">Kardex</option>
                   <option value="Boleta">Boleta</option>
@@ -322,119 +322,112 @@ export default function TramitesPage() {
               </div>
 
               {alumnoSeleccionado && (
-                <div className="rounded-3xl border border-slate-700 bg-slate-900 p-4">
-                  <p className="text-xs uppercase tracking-[0.15em] text-slate-400 mb-3">Datos del alumno seleccionado</p>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Matrícula</p>
-                      <p className="text-white">{alumnoSeleccionado.matricula}</p>
+                <div className="rounded-3xl border border-border-subtle bg-bg-main p-5">
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-text-secondary font-black mb-4 ml-1">Datos del alumno</p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <p className="text-text-secondary text-[10px] font-bold uppercase">Matrícula</p>
+                      <p className="text-text-primary font-bold">{alumnoSeleccionado.matricula}</p>
                     </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Nombre</p>
-                      <p className="text-white">{alumnoSeleccionado.nombres}</p>
+                    <div className="space-y-1">
+                      <p className="text-text-secondary text-[10px] font-bold uppercase">Nombre</p>
+                      <p className="text-text-primary font-bold">{alumnoSeleccionado.nombres}</p>
                     </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Apellido paterno</p>
-                      <p className="text-white">{alumnoSeleccionado.apellidoPaterno}</p>
+                    <div className="space-y-1">
+                      <p className="text-text-secondary text-[10px] font-bold uppercase">Grupo</p>
+                      <p className="text-text-primary font-bold">{alumnoSeleccionado.grupo}</p>
                     </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Apellido materno</p>
-                      <p className="text-white">{alumnoSeleccionado.apellidoMaterno}</p>
-                    </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Grupo</p>
-                      <p className="text-white">{alumnoSeleccionado.grupo}</p>
-                    </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Turno</p>
-                      <p className="text-white">{alumnoSeleccionado.turno}</p>
-                    </div>
-                    <div className="space-y-1 text-slate-300 text-sm">
-                      <p className="text-slate-500">Faltas</p>
-                      <p className="text-white">{alumnoSeleccionado.faltas}</p>
+                    <div className="space-y-1">
+                      <p className="text-text-secondary text-[10px] font-bold uppercase">Turno</p>
+                      <p className="text-text-primary font-bold">{alumnoSeleccionado.turno}</p>
                     </div>
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Motivo</label>
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-[0.15em] ml-1">Motivo</label>
                 <textarea
                   value={motivo}
                   onChange={(e) => setMotivo(e.target.value)}
-                  className="mt-2 h-24 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
+                  className="mt-2 h-24 w-full rounded-2xl border border-border-subtle bg-bg-main px-4 py-3 text-text-primary outline-none transition focus:border-cecyteq-green resize-none"
                   placeholder="Describe el motivo del trámite"
                 />
               </div>
 
-              <div>
-                <label className="text-xs text-slate-400 uppercase tracking-[0.15em]">Observaciones (opcional)</label>
-                <textarea
-                  value={observaciones}
-                  onChange={(e) => setObservaciones(e.target.value)}
-                  className="mt-2 h-20 w-full rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-400"
-                  placeholder="Detalles adicionales..."
-                />
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <button onClick={generarTramite} className="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700">
-                  Generar trámite
-                </button>
-                <button onClick={() => setModoNuevo(false)} className="rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-semibold text-white transition hover:border-slate-500">
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end pt-4">
+                <button onClick={() => setModoNuevo(false)} className="px-6 py-3 rounded-2xl border border-border-subtle text-text-secondary font-bold hover:bg-bg-main transition-all">
                   Cancelar
+                </button>
+                <button onClick={generarTramite} className="px-8 py-3 rounded-2xl bg-cecyteq-green text-white font-black shadow-lg shadow-cecyteq-green/20 hover:scale-[1.02] transition-all">
+                  Generar trámite
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        <div className="mt-8 rounded-[1.75rem] border border-slate-800/50 bg-slate-950/80 p-6 shadow-glow">
-          <h3 className="text-lg font-semibold text-white mb-4">Solicitudes</h3>
+        <div className="mt-8 rounded-[1.75rem] border border-border-subtle bg-bg-surface p-6 shadow-glow">
+          <h3 className="text-lg font-bold text-text-primary mb-6 ml-2">Historial de Solicitudes</h3>
           {loading ? (
-            <p className="text-slate-400">Cargando solicitudes...</p>
+            <p className="text-text-secondary p-4">Cargando solicitudes...</p>
           ) : tramites.length === 0 ? (
-            <p className="text-slate-400">No hay trámites registrados.</p>
+            <p className="text-text-secondary p-4">No hay trámites registrados.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-sm text-left">
-                <thead className="text-slate-300 text-xs uppercase tracking-wide border-b border-slate-800">
+                <thead className="text-text-secondary text-[10px] font-black uppercase tracking-widest border-b border-border-subtle">
                   <tr>
-                    <th className="px-3 py-2">#</th>
-                    <th className="px-3 py-2">Alumno</th>
-                    <th className="px-3 py-2">Tipo</th>
-                    <th className="px-3 py-2">Motivo</th>
-                    <th className="px-3 py-2">Estatus</th>
-                    <th className="px-3 py-2">Respuesta</th>
-                    <th className="px-3 py-2">Creado</th>
-                    <th className="px-3 py-2">Acciones</th>
+                    <th className="px-4 py-4 text-center">#</th>
+                    <th className="px-4 py-4">Alumno</th>
+                    <th className="px-4 py-4">Tipo</th>
+                    <th className="px-4 py-4">Estatus</th>
+                    <th className="px-4 py-4">Respuesta</th>
+                    <th className="px-4 py-4">Fecha</th>
+                    <th className="px-4 py-4 text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-border-subtle">
                   {tramites.map((t, idx) => (
-                    <tr key={t.id} className="hover:bg-slate-900/40">
-                      <td className="px-3 py-2 text-slate-300">{idx + 1}</td>
-                      <td className="px-3 py-2 text-slate-200">{t.alumno.matricula} — {t.alumno.apellidoPaterno} {t.alumno.apellidoMaterno} {t.alumno.nombres}</td>
-                      <td className="px-3 py-2 text-slate-200">{t.tipo}</td>
-                      <td className="px-3 py-2 text-slate-200">{t.motivo}</td>
-                      <td className="px-3 py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${t.estatus === 'Pendiente' ? 'bg-yellow-500/20 text-yellow-200' : t.estatus === 'Generado' ? 'bg-emerald-500/20 text-emerald-200' : 'bg-red-500/20 text-red-200'}`}>
+                    <tr key={t.id} className="group hover:bg-bg-main/50 transition-colors">
+                      <td className="px-4 py-4 text-center text-text-secondary font-bold">{idx + 1}</td>
+                      <td className="px-4 py-4">
+                        <p className="text-text-primary font-bold">{t.alumno.matricula}</p>
+                        <p className="text-xs text-text-secondary">{t.alumno.apellidoPaterno} {t.alumno.nombres}</p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="bg-bg-main px-3 py-1 rounded-lg border border-border-subtle text-text-primary font-medium text-xs">
+                          {t.tipo}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border ${
+                          t.estatus === 'Pendiente' ? 'bg-cecyteq-orange/10 text-cecyteq-orange border-cecyteq-orange/20' : 
+                          t.estatus === 'Generado' ? 'bg-cecyteq-green/10 text-cecyteq-green border-cecyteq-green/20' : 
+                          'bg-red-500/10 text-red-400 border-red-500/20'
+                        }`}>
                           {t.estatus}
                         </span>
                       </td>
-                      <td className="px-3 py-2 text-slate-200">{t.respuestaAdministrador ?? '-'}</td>
-                      <td className="px-3 py-2 text-slate-400">{new Date(t.creadoEn).toLocaleString()}</td>
-                      <td className="px-3 py-2 flex flex-wrap gap-2">
-                        <button
-                          onClick={() => handleGenerarPdf(t)}
-                          className="rounded-2xl bg-emerald-600 px-2 py-1 text-xs font-semibold text-white transition hover:bg-emerald-700"
-                          disabled={t.estatus !== 'Pendiente'}
-                        >{t.estatus === 'Generado' ? 'Generado' : 'Generar PDF'}</button>
-                        <button
-                          onClick={() => handleRechazar(t)}
-                          className="rounded-2xl bg-red-600 px-2 py-1 text-xs font-semibold text-white transition hover:bg-red-700"
-                          disabled={t.estatus !== 'Pendiente'}
-                        >Rechazar</button>
+                      <td className="px-4 py-4 text-text-secondary text-xs italic">{t.respuestaAdministrador ?? 'Sin respuesta aún'}</td>
+                      <td className="px-4 py-4 text-text-secondary text-xs">{new Date(t.creadoEn).toLocaleDateString()}</td>
+                      <td className="px-4 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleGenerarPdf(t)}
+                            className="rounded-xl bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 px-3 py-1.5 text-xs font-bold transition-all hover:bg-cecyteq-green hover:text-white disabled:opacity-30"
+                            disabled={t.estatus !== 'Pendiente'}
+                          >
+                            {t.estatus === 'Generado' ? 'Listo' : 'Generar'}
+                          </button>
+                          <button
+                            onClick={() => handleRechazar(t)}
+                            className="rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1.5 text-xs font-bold transition-all hover:bg-red-500 hover:text-white disabled:opacity-30"
+                            disabled={t.estatus !== 'Pendiente'}
+                          >
+                            Rechazar
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

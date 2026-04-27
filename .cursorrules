@@ -1,0 +1,36 @@
+# Plataforma CECYTEQ: Development Rules & Skills
+
+Estas reglas definen el estándar de desarrollo de la Plataforma Integral de Gestión Educativa CECYTEQ 5.
+
+## 1. Stack Tecnológico Core
+- **Framework**: Next.js (App Router, React Server Components por defecto).
+- **Lenguaje**: TypeScript estricto. Evitar el uso de `any` siempre que sea posible.
+- **ORM & DB**: Prisma + PostgreSQL.
+- **Estilos**: Tailwind CSS v4.
+
+## 2. Reglas de Diseño Institucional (UI/UX)
+El aspecto visual de CECYTEQ es fundamental. **No se permiten diseños genéricos**.
+- **Dark Mode Premium**: La aplicación opera exclusivamente en modo oscuro de alta fidelidad.
+- **Prohibido el uso de colores genéricos**: No utilizar `bg-blue-500`, `text-emerald-400`, `slate-900`, etc.
+- **Variables Obligatorias** (Definidas en `globals.css`):
+  - `bg-bg-main`: Fondo principal oscuro (`#121212`).
+  - `bg-bg-surface`: Superficies elevadas/tarjetas (`#1E1E1E`).
+  - `text-cecyteq-green`: Verde Oficial CECYTEQ (`#3BA64A`) para acentos, iconos primarios y botones principales.
+  - `text-cecyteq-orange`: Naranja Oficial CECYTEQ (`#F06C22`) para alertas secundarias y navegación.
+- **Tipografía "Premium"**: Usar `font-black` para títulos y encabezados de tablas, frecuentemente combinado con `uppercase` y `tracking-widest` o `tracking-tighter`.
+- **Estructura Orgánica**: Utilizar esquinas súper redondeadas (`rounded-2xl`, `rounded-[2.5rem]`, `rounded-[3rem]`).
+- **Sombras**: Utilizar `shadow-glow` para dar profundidad.
+
+## 3. Arquitectura de Next.js
+- **Server Actions**: Todo el código de mutación de base de datos (Prisma `create`, `update`, `delete`) debe vivir en `src/actions/`. No mezclar operaciones de DB directamente dentro del JSX de componentes cliente.
+- **Client Components (`use client`)**: Restringir su uso solo a donde se necesite interactividad (formularios interactivos, estados con `useState`, hooks de Next como `useRouter`).
+- Envolver Server Actions dentro de `useTransition` para proveer feedback de UI (spinners o text loaders).
+
+## 4. Manipulación de Datos
+- Al generar consultas Prisma, pre-ordenar siempre los datos (`orderBy`) y tipar los retornos explícitamente si se usan joins (`include`).
+- Utilizar Server Components para hacer fetch inicial (ej. obtener lista de alumnos) y pasarlo como `props` a un Client Component (`<CalificacionesClient />`).
+
+## 5. Manejo de Assets e Identidad
+- El logo institucional debe cargarse desde `/cecyteq_logo.png`.
+- Si el logo o imágenes tienen fondo blanco y el contenedor es `bg-main`, envolver el logo en un contenedor `bg-white` con `rounded-3xl` para simular un "Badge/Pin" en lugar de mostrar bordes blancos rotos.
+- La firma de marca oficial a lo largo del dashboard es: **CECyTEQ 5** | *By Lesty*.

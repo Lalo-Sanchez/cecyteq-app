@@ -37,4 +37,32 @@ export async function loginUser(email: string, password_hash: string) {
 export async function logoutUser() {
   const cookieStore = await cookies();
   cookieStore.delete('userRole');
+  cookieStore.delete('userId');
+}
+
+export async function loginWithGoogle(email: string) {
+  try {
+    // En una implementación real, aquí verificaríamos el token de Google
+    // Por ahora, simulamos el éxito si el correo existe en nuestra BD institucional
+    const user = await prisma.usuario.findUnique({
+      where: { email: email },
+      include: { rol: true }
+    });
+
+    if (!user) {
+      return { 
+        success: false, 
+        error: "Este correo de Google no está vinculado a ninguna cuenta institucional." 
+      };
+    }
+
+    const cookieStore = await cookies();
+    cookieStore.set('userRole', user.rol.nombre, { httpOnly: false, path: '/' });
+    cookieStore.set('userId', String(user.id), { httpOnly: false, path: '/' });
+
+    return { success: true, role: user.rol.nombre, userId: user.id };
+  } catch (error) {
+    console.error("Error en Google Auth Simulation:", error);
+    return { success: false, error: "Error en la conexión con Google." };
+  }
 }

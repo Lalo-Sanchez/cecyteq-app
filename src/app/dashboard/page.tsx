@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Briefcase, CheckCircle, BookOpen, Clock, Award, Bell } from 'lucide-react';
+import { obtenerEstadisticasDashboard } from '@/actions/dashboard';
 
 type AlumnoResumen = {
   id: number;
@@ -14,12 +15,11 @@ export default function DashboardPage() {
   const [role, setRole] = useState<string | null>(null);
   const [alumnos, setAlumnos] = useState<AlumnoResumen[]>([]);
   const [serviciosAbiertos, setServiciosAbiertos] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setRole(localStorage.getItem('userRole'));
-      setUserId(localStorage.getItem('userId'));
     }
   }, []);
 
@@ -35,6 +35,12 @@ export default function DashboardPage() {
         }
       };
       loadAlumnos();
+    } else if (role === 'alumno' || role === 'docente') {
+      const loadStats = async () => {
+        const result = await obtenerEstadisticasDashboard();
+        if (result.success) setStats(result.data);
+      };
+      loadStats();
     }
   }, [role]);
 
@@ -154,7 +160,7 @@ export default function DashboardPage() {
     );
   }
 
-  // Vista para Alumno / Docente (Simplificada por ahora)
+  // Vista para Alumno / Docente
   return (
     <div className="space-y-8 animate-fadeInUp">
       <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-800/60 bg-slate-950/90 p-10 shadow-glow">
@@ -162,51 +168,67 @@ export default function DashboardPage() {
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div>
             <h1 className="text-4xl font-black text-white tracking-tight">¡Bienvenido de nuevo!</h1>
-            <p className="text-slate-400 mt-2 max-w-md">Aquí tienes un resumen de tus actividades y tareas pendientes para hoy.</p>
+            <p className="text-slate-400 mt-2 max-w-md">Aquí tienes un resumen de tus actividades y progreso en la plataforma.</p>
           </div>
           <div className="flex gap-4">
-             <div className="text-right">
-                <p className="text-xs text-slate-500 uppercase font-bold tracking-widest">Tu Rol</p>
-                <p className="text-xl font-black text-emerald-400 uppercase">{role || 'Usuario'}</p>
+             <div className="text-right bg-slate-900 px-6 py-4 rounded-3xl border border-slate-800">
+                <p className="text-[10px] text-slate-500 uppercase font-black tracking-[0.2em] mb-1">Tu Rol Oficial</p>
+                <p className="text-2xl font-black text-emerald-400 uppercase tracking-tighter">{role || 'Usuario'}</p>
              </div>
+             {stats && role === 'alumno' && (
+                <div className="text-center bg-slate-900 px-6 py-4 rounded-3xl border border-slate-800">
+                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-[0.2em] mb-1">Materias</p>
+                  <p className="text-2xl font-black text-white">{stats.materiasAprobadas} <span className="text-sm text-slate-500">/ {stats.totalMaterias || 1}</span></p>
+                </div>
+             )}
+             {stats && role === 'docente' && (
+                <div className="text-center bg-slate-900 px-6 py-4 rounded-3xl border border-slate-800">
+                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-[0.2em] mb-1">Por Revisar</p>
+                  <p className="text-2xl font-black text-orange-400">{stats.tareasPorRevisar} <span className="text-sm text-slate-500">Tareas</span></p>
+                </div>
+             )}
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link href="/dashboard/aula" className="bg-slate-900 border border-slate-800 rounded-3xl p-6 hover:bg-slate-800/50 transition-all group">
-          <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <BookOpen className="text-emerald-400" size={24} />
+        <Link href="/dashboard/aula" className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 hover:bg-slate-800/80 transition-all group shadow-glow relative overflow-hidden">
+          <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner">
+            <BookOpen className="text-emerald-400" size={28} />
           </div>
-          <h3 className="text-lg font-bold text-white">Aula Virtual</h3>
-          <p className="text-slate-500 text-xs mt-1">Consulta tus tareas y sube tus entregas.</p>
+          <h3 className="text-xl font-black text-white uppercase tracking-tight">Aula Virtual</h3>
+          <p className="text-slate-500 text-sm mt-2 font-medium">Consulta tus tareas y sube tus entregas a tiempo.</p>
         </Link>
 
         {role === 'alumno' ? (
-          <Link href="/dashboard/perfil/kardex" className="bg-slate-900 border border-slate-800 rounded-3xl p-6 hover:bg-slate-800/50 transition-all group">
-            <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Award className="text-orange-400" size={24} />
+          <Link href="/dashboard/perfil/kardex" className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 hover:bg-slate-800/80 transition-all group shadow-glow relative overflow-hidden">
+            <div className="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner">
+              <Award className="text-orange-400" size={28} />
             </div>
-            <h3 className="text-lg font-bold text-white">Mi Kardex</h3>
-            <p className="text-slate-500 text-xs mt-1">Revisa tus calificaciones oficiales e historial.</p>
+            <h3 className="text-xl font-black text-white uppercase tracking-tight">Mi Kardex</h3>
+            <p className="text-slate-500 text-sm mt-2 font-medium">Revisa tus calificaciones oficiales e historial de progreso.</p>
           </Link>
         ) : (
-          <Link href="/dashboard/alumnos" className="bg-slate-900 border border-slate-800 rounded-3xl p-6 hover:bg-slate-800/50 transition-all group">
-            <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <CheckCircle className="text-orange-400" size={24} />
+          <Link href="/dashboard/docentes/grupos" className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 hover:bg-slate-800/80 transition-all group shadow-glow relative overflow-hidden">
+            <div className="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner">
+              <CheckCircle className="text-orange-400" size={28} />
             </div>
-            <h3 className="text-lg font-bold text-white">Pase de Lista</h3>
-            <p className="text-slate-500 text-xs mt-1">Registra la asistencia de tus grupos.</p>
+            <h3 className="text-xl font-black text-white uppercase tracking-tight">Pase de Lista</h3>
+            <p className="text-slate-500 text-sm mt-2 font-medium">Registra la asistencia de tus {stats?.totalGrupos || 0} grupos asignados.</p>
           </Link>
         )}
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center mb-4">
-            <Clock className="text-slate-400" size={24} />
+        <Link href={role === 'alumno' ? '/dashboard/horarios' : '/dashboard/perfil'} className="bg-slate-900 border border-slate-800 rounded-[2rem] p-8 hover:bg-slate-800/80 transition-all group shadow-glow relative overflow-hidden">
+          <div className="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-slate-700">
+            {role === 'alumno' ? <Clock className="text-slate-300" size={28} /> : <Briefcase className="text-slate-300" size={28} />}
           </div>
-          <h3 className="text-lg font-bold text-white">Próximos Eventos</h3>
-          <p className="text-slate-500 text-xs mt-1">Mantente al tanto de las fechas importantes.</p>
-        </div>
+          <h3 className="text-xl font-black text-white uppercase tracking-tight">
+            {role === 'alumno' ? 'Horario Escolar' : 'Perfil Institucional'}
+          </h3>
+          <p className="text-slate-500 text-sm mt-2 font-medium">
+            {role === 'alumno' ? 'Consulta tus materias y horas asignadas.' : 'Administra tu identidad y configuración personal.'}
+          </p>
+        </Link>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { UserCircle, Mail, Briefcase, Key, Shield, LogOut } from 'lucide-react';
+import { UserCircle, Mail, Briefcase, Key, Shield, LogOut, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { logoutUser } from '@/actions/auth';
 
@@ -22,86 +22,98 @@ export default function PerfilPage() {
   };
 
   const getUserName = () => {
-    if (role === 'admin') return 'Lalo Diaz';
-    if (role === 'docente') return 'Docente Titular';
-    if (role === 'alumno') return 'Alumno CECYTEQ';
+    if (role === 'admin') return 'Eduardo Sánchez';
+    if (role === 'docente') return 'Docente CECYTEQ';
+    if (role === 'alumno') return 'Alumno Institucional';
     return 'Usuario';
   };
 
   const getRoleName = () => {
     switch(role) {
-      case 'admin': return 'Director General';
-      case 'docente': return 'Docente';
-      case 'alumno': return 'Alumno';
-      default: return 'Usuario';
+      case 'admin': return 'Director de Plantel';
+      case 'docente': return 'Docente Académico';
+      case 'alumno': return 'Estudiante Regular';
+      default: return 'Usuario Plataforma';
     }
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-10 max-w-5xl mx-auto animate-fadeInUp">
       <div>
-        <h2 className="text-2xl font-bold text-white">Mi Perfil</h2>
-        <p className="text-slate-400 text-sm mt-1">Administra tu información personal y configuración de cuenta.</p>
+        <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase">Perfil de Usuario</h2>
+        <p className="text-text-secondary font-medium mt-2">Configuración de identidad institucional y seguridad de cuenta.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Tarjeta de Identidad */}
-        <div className="md:col-span-1 space-y-6">
-          <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 shadow-glow flex flex-col items-center text-center">
-            <div className="relative mb-4">
-              <UserCircle size={96} className="text-slate-400" />
-              <div className="absolute bottom-1 right-1 w-6 h-6 bg-emerald-500 border-4 border-slate-950 rounded-full"></div>
+        <div className="lg:col-span-1 space-y-8">
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-10 shadow-glow flex flex-col items-center text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-cecyteq-green"></div>
+            <div className="relative mb-6">
+              <div className="w-32 h-32 bg-bg-main border-2 border-border-subtle rounded-3xl flex items-center justify-center text-text-secondary shadow-inner group transition-transform hover:scale-105">
+                <UserCircle size={80} className="group-hover:text-cecyteq-green transition-colors" />
+              </div>
+              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-cecyteq-green border-4 border-bg-surface rounded-2xl flex items-center justify-center shadow-lg">
+                <Shield size={14} className="text-white" />
+              </div>
             </div>
-            <h3 className="text-xl font-bold text-white">{getUserName()}</h3>
-            <p className="text-emerald-400 font-medium text-sm mb-4">{getRoleName()}</p>
+            <h3 className="text-2xl font-black text-text-primary tracking-tight leading-tight">{getUserName()}</h3>
+            <p className="text-cecyteq-green font-black text-[10px] uppercase tracking-widest mt-2 px-4 py-1.5 bg-cecyteq-green/10 rounded-full border border-cecyteq-green/20">{getRoleName()}</p>
             
-            <div className="w-full pt-4 border-t border-slate-800 flex flex-col gap-2">
-              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors text-sm font-medium border border-red-500/20">
-                <LogOut size={16} /> Cerrar Sesión
+            <div className="w-full mt-10 pt-8 border-t border-border-subtle flex flex-col gap-4">
+              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl transition-all text-xs font-black uppercase tracking-widest border border-red-500/20 shadow-lg shadow-red-500/5">
+                <LogOut size={18} /> Cerrar Sesión
               </button>
             </div>
           </div>
         </div>
 
         {/* Detalles de la cuenta */}
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 shadow-glow">
-            <h3 className="text-lg font-semibold text-white mb-4 border-b border-slate-800 pb-2 flex items-center gap-2">
-              <Briefcase className="text-orange-400" size={20} /> Información Institucional
+        <div className="lg:col-span-2 space-y-10">
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-10 shadow-glow">
+            <h3 className="text-xl font-black text-text-primary mb-8 flex items-center gap-4 uppercase tracking-widest border-b border-border-subtle pb-6">
+              <Briefcase className="text-cecyteq-orange" size={24} /> Expediente Digital
             </h3>
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 items-center">
-                <span className="text-slate-400 text-sm">Nombre Completo</span>
-                <span className="col-span-2 text-slate-200 font-medium">{getUserName()}</span>
+            <div className="space-y-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-border-subtle/30 pb-4">
+                <span className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em]">Nombre Legal</span>
+                <span className="text-lg text-text-primary font-black tracking-tight">{getUserName()}</span>
               </div>
-              <div className="grid grid-cols-3 items-center">
-                <span className="text-slate-400 text-sm">Cargo Oficial</span>
-                <span className="col-span-2 text-slate-200 font-medium">{getRoleName()}</span>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-border-subtle/30 pb-4">
+                <span className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em]">Posición Institucional</span>
+                <span className="text-lg text-text-primary font-black tracking-tight">{getRoleName()}</span>
               </div>
-              <div className="grid grid-cols-3 items-center">
-                <span className="text-slate-400 text-sm">Plantel</span>
-                <span className="col-span-2 text-slate-200 font-medium">CECYTEQ Menchaca</span>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-border-subtle/30 pb-4">
+                <span className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em]">Centro de Adscripción</span>
+                <span className="text-lg text-text-primary font-black tracking-tight flex items-center gap-2">
+                  <MapPin size={18} className="text-cecyteq-orange" /> CECYTEQ Plantel No. 5
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 shadow-glow">
-            <h3 className="text-lg font-semibold text-white mb-4 border-b border-slate-800 pb-2 flex items-center gap-2">
-              <Shield className="text-emerald-400" size={20} /> Seguridad y Accesos
+          <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-10 shadow-glow">
+            <h3 className="text-xl font-black text-text-primary mb-8 flex items-center gap-4 uppercase tracking-widest border-b border-border-subtle pb-6">
+              <Shield className="text-cecyteq-green" size={24} /> Credenciales y Accesos
             </h3>
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 items-center">
-                <span className="text-slate-400 text-sm">Correo Institucional</span>
-                <div className="col-span-2 flex justify-between items-center">
-                  <span className="text-slate-200 font-medium flex items-center gap-2"><Mail size={16} className="text-slate-500"/> admin@cecyteq.edu.mx</span>
+            <div className="space-y-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-subtle/30 pb-6">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em]">Email Institucional</span>
+                  <div className="text-lg text-text-primary font-black tracking-tight flex items-center gap-3">
+                    <Mail size={20} className="text-text-secondary/40"/> eduardosanchez@cecyteq.edu.mx
+                  </div>
                 </div>
+                <span className="px-3 py-1 bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 rounded-lg text-[9px] font-black uppercase tracking-widest">Verificado</span>
               </div>
-              <div className="grid grid-cols-3 items-center">
-                <span className="text-slate-400 text-sm">Contraseña</span>
-                <div className="col-span-2 flex justify-between items-center">
-                  <span className="text-slate-200 font-medium flex items-center gap-2"><Key size={16} className="text-slate-500"/> ••••••••••</span>
-                  <button className="text-xs text-orange-400 hover:underline">Cambiar</button>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-subtle/30 pb-6">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-text-secondary font-black uppercase tracking-[0.2em]">Contraseña de Acceso</span>
+                  <div className="text-lg text-text-primary font-black tracking-[0.3em] flex items-center gap-3">
+                    <Key size={20} className="text-text-secondary/40"/> ••••••••••
+                  </div>
                 </div>
+                <button className="px-4 py-2 bg-bg-main border border-border-subtle text-cecyteq-orange hover:bg-cecyteq-orange hover:text-white transition-all rounded-xl text-[10px] font-black uppercase tracking-widest">Actualizar</button>
               </div>
             </div>
           </div>

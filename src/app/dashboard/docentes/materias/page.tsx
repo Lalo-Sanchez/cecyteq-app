@@ -1,12 +1,11 @@
 import React from 'react';
 import { prisma } from '@/lib/prisma';
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, Search, Plus } from 'lucide-react';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MateriasPage() {
-  // Obtener todas las asignaciones de docentes a grupos/materias
   const asignaciones = await prisma.grupoDocente.findMany({
     include: {
       docente: true,
@@ -19,78 +18,74 @@ export default async function MateriasPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-8 animate-fadeInUp">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <BookOpen className="text-orange-500" /> Catálogo de Materias Activas
+          <h2 className="text-4xl font-black text-text-primary flex items-center gap-4 tracking-tighter">
+            <BookOpen className="text-cecyteq-orange w-10 h-10" /> Catálogo Académico
           </h2>
-          <p className="text-slate-400 text-sm mt-1">Directorio de materias impartidas, grupos asociados y personal docente responsable.</p>
+          <p className="text-text-secondary text-sm mt-2 font-medium">Directorio centralizado de materias, grupos y personal docente responsable.</p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/docentes/materias/nuevo" className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-emerald-500/20">
-            <BookOpen size={18} /> Nueva Materia
+        <div>
+          <Link href="/dashboard/docentes/materias/nuevo" className="bg-cecyteq-green hover:bg-cecyteq-green/90 text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-cecyteq-green/20 flex items-center gap-2 hover:scale-[1.02]">
+            <Plus size={20} /> Nueva Materia
           </Link>
         </div>
       </div>
 
-      <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
-        <Search className="text-slate-400" size={20} />
+      <div className="bg-bg-surface border border-border-subtle rounded-3xl p-6 flex items-center gap-4 shadow-inner">
+        <Search className="text-text-secondary" size={20} />
         <input 
           type="text" 
-          placeholder="Buscar materia o docente (deshabilitado temporalmente)..." 
+          placeholder="Filtrar por materia, docente o grupo..." 
           disabled
-          className="bg-transparent border-none outline-none text-slate-200 w-full placeholder-slate-600 opacity-50 cursor-not-allowed"
+          className="bg-transparent border-none outline-none text-text-primary w-full placeholder-text-secondary/30 font-bold opacity-50 cursor-not-allowed"
         />
       </div>
 
-      <div className="bg-slate-950/50 border border-slate-800 rounded-2xl overflow-hidden shadow-glow">
+      <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] overflow-hidden shadow-glow">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400">
+            <thead className="bg-bg-main/50 border-b border-border-subtle text-text-secondary">
               <tr>
-                <th className="px-6 py-4 font-medium">Nombre de la Materia</th>
-                <th className="px-6 py-4 font-medium">Grupo Asignado</th>
-                <th className="px-6 py-4 font-medium">Turno</th>
-                <th className="px-6 py-4 font-medium">Docente Titular</th>
-                <th className="px-6 py-4 font-medium">Contacto Docente</th>
-                <th className="px-6 py-4 font-medium text-right">Estatus</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Asignatura</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Grupo</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Turno</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Docente</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest">Contacto</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-right">Estado</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/50 text-slate-300">
+            <tbody className="divide-y divide-border-subtle text-text-primary">
               {asignaciones.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                    No hay materias asignadas a docentes en el sistema.
+                  <td colSpan={6} className="px-8 py-16 text-center text-text-secondary font-medium italic">
+                    No se han registrado asignaciones académicas en el periodo actual.
                   </td>
                 </tr>
               ) : (
                 asignaciones.map((asig) => (
-                  <tr key={asig.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <span className="font-semibold text-orange-400">{asig.materia}</span>
+                  <tr key={asig.id} className="group hover:bg-bg-main/50 transition-colors">
+                    <td className="px-8 py-5">
+                      <span className="font-black text-cecyteq-green tracking-tight text-base group-hover:text-cecyteq-orange transition-colors uppercase">{asig.materia}</span>
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-200">
+                    <td className="px-8 py-5 font-bold text-text-primary">
                       {asig.grupo.nombre}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs border border-slate-700 px-2 py-1 rounded bg-slate-800/50">
+                    <td className="px-8 py-5">
+                      <span className="text-[10px] font-black uppercase tracking-widest bg-bg-main px-3 py-1.5 rounded-lg border border-border-subtle text-text-secondary">
                         {asig.grupo.turno}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-8 py-5 font-bold">
                       {asig.docente.nombres} {asig.docente.apellidos}
                     </td>
-                    <td className="px-6 py-4 text-xs">
-                      {asig.docente.telefono ? (
-                        <span>{asig.docente.telefono}</span>
-                      ) : (
-                        <span className="text-slate-600 italic">No registrado</span>
-                      )}
+                    <td className="px-8 py-5 font-mono text-xs text-text-secondary">
+                      {asig.docente.telefono || '—'}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                        Impartiéndose
+                    <td className="px-8 py-5 text-right">
+                      <span className="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border bg-cecyteq-green/10 text-cecyteq-green border-cecyteq-green/20 shadow-sm">
+                        Activo
                       </span>
                     </td>
                   </tr>

@@ -237,7 +237,7 @@ export default function AlumnosPage() {
       head: [['#', 'Asignatura', 'P1', 'P2', 'P3', 'C / EXT', 'IT / RC', 'Final', 'Estatus']],
       body: body.length > 0 ? body : [['', 'Sin calificaciones registradas', '', '', '', '', '', '', '']],
       styles: { fontSize: 7, cellPadding: 2, valign: 'middle' },
-      headStyles: { fillColor: [30, 80, 160], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: 7 },
+      headStyles: { fillColor: [59, 166, 74], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: 7 },
       columnStyles: {
         0: { halign: 'center', cellWidth: 8 },
         1: { cellWidth: 'auto' },
@@ -288,8 +288,8 @@ export default function AlumnosPage() {
       case 'Inscrito': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       case 'Baja Temporal': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       case 'Baja': return 'bg-red-500/10 text-red-400 border-red-500/20';
-      case 'Egresado': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-      default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+      case 'Egresado': return 'bg-cecyteq-orange/10 text-cecyteq-orange border-cecyteq-orange/20';
+      default: return 'bg-text-secondary/10 text-text-secondary border-border-subtle';
     }
   };
 
@@ -298,155 +298,164 @@ export default function AlumnosPage() {
       {/* CABECERA DEL MÓDULO */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users className="text-blue-500" /> Directorio de Alumnos
+          <h2 className="text-2xl font-black text-text-primary flex items-center gap-2 tracking-tight">
+            <Users className="text-cecyteq-green" /> Directorio de Alumnos
           </h2>
-          <p className="text-slate-400 text-sm mt-1">Gestión integral de expedientes escolares.</p>
+          <p className="text-text-secondary text-sm mt-1">Gestión integral de expedientes escolares.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button 
             onClick={handleExportExcel}
-            className="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+            className="bg-bg-surface hover:bg-bg-main text-text-primary border border-border-subtle px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
           >
             Exportar Excel
           </button>
           <Link 
             href="/dashboard/alumnos/nuevo"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
+            className="bg-cecyteq-green hover:bg-cecyteq-green/90 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-cecyteq-green/20 flex items-center gap-2"
           >
-            <UserPlus size={18} /> Nuevo Alumno
+            <UserPlus size={16} /> Nuevo Alumno
           </Link>
         </div>
       </div>
 
       {/* BARRA DE BÚSQUEDA */}
-      <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
-        <Search className="text-slate-400" size={20} />
+      <div className="bg-bg-surface border border-border-subtle rounded-2xl p-5 flex items-center gap-4 shadow-inner">
+        <Search className="text-text-secondary" size={20} />
         <input 
           type="text" 
           placeholder="Buscar por apellidos, nombre, grupo o matrícula..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-transparent border-none outline-none text-slate-200 w-full placeholder-slate-500"
+          className="bg-transparent border-none outline-none text-text-primary w-full placeholder-text-secondary/40 font-medium"
         />
       </div>
 
       {/* TABLA DE ALUMNOS AGRUPADOS POR GRUPO */}
       <div className="space-y-4">
         {gruposActivos.length === 0 && (
-          <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 text-center text-slate-400">
+          <div className="bg-bg-surface/50 border border-border-subtle rounded-2xl p-10 text-center text-text-secondary font-medium">
             No se encontraron alumnos registrados.
           </div>
         )}
 
         {gruposActivos.map(([grupo, alumnosGrupo]) => (
-          <details key={grupo} open={expandedGroup === grupo} className="group border border-slate-800 rounded-2xl bg-slate-950/50">
+          <details key={grupo} open={expandedGroup === grupo} className="group border border-border-subtle rounded-2xl bg-bg-surface/30 overflow-hidden transition-all">
             <summary
               onClick={(e) => { e.preventDefault(); setExpandedGroup(expandedGroup === grupo ? null : grupo); }}
-              className="flex justify-between items-center px-6 py-4 cursor-pointer select-none text-slate-200 hover:bg-slate-900/50"
+              className="flex justify-between items-center px-6 py-5 cursor-pointer select-none text-text-primary hover:bg-bg-main/50 transition-colors"
             >
-              <div>
-                <p className="font-semibold text-lg">{grupo}</p>
-                <p className="text-xs text-slate-400">{alumnosGrupo.length} alumnos</p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-bg-main rounded-xl flex items-center justify-center border border-border-subtle text-cecyteq-green font-black">
+                  {grupo.substring(0, 2)}
+                </div>
+                <div>
+                  <p className="font-black text-xl tracking-tight uppercase">{grupo}</p>
+                  <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest">{alumnosGrupo.length} Alumnos inscritos</p>
+                </div>
               </div>
-              <span className="text-sm text-blue-300">{expandedGroup === grupo ? 'Ocultar' : 'Mostrar'}</span>
+              <span className="text-xs font-black uppercase tracking-widest text-cecyteq-orange px-4 py-2 bg-bg-main rounded-xl border border-border-subtle">
+                {expandedGroup === grupo ? 'Ocultar' : 'Ver Lista'}
+              </span>
             </summary>
 
-            <div className="overflow-x-auto pb-4">
+            <div className="overflow-x-auto pb-4 border-t border-border-subtle">
               <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-slate-900 border-t border-slate-800 text-slate-400">
+                <thead className="bg-bg-main/50 text-text-secondary text-[10px] font-black uppercase tracking-widest">
                   <tr>
-                    <th className="px-6 py-3 font-medium">#</th>
-                    <th className="px-6 py-3 font-medium">Matrícula</th>
-                    <th className="px-6 py-3 font-medium">Apellidos y Nombres</th>
-                    <th className="px-6 py-3 font-medium">Turno</th>
-                    <th className="px-6 py-3 font-medium">Correo</th>
-                    <th className="px-6 py-3 font-medium">Faltas</th>
-                    <th className="px-6 py-3 font-medium">Estatus</th>
-                    <th className="px-6 py-3 font-medium text-right">Acciones</th>
+                    <th className="px-6 py-4">#</th>
+                    <th className="px-6 py-4">Matrícula</th>
+                    <th className="px-6 py-4">Estudiante</th>
+                    <th className="px-6 py-4">Turno</th>
+                    <th className="px-6 py-4">Correo</th>
+                    <th className="px-6 py-4">Asistencia</th>
+                    <th className="px-6 py-4">Estatus</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/50 text-slate-300">
+                <tbody className="divide-y divide-border-subtle text-text-primary">
                   {alumnosGrupo
                     .sort((a,b) => a.apellidoPaterno.localeCompare(b.apellidoPaterno))
                     .map((alumno) => (
                       <React.Fragment key={alumno.id}>
                         <tr 
                           onClick={() => toggleAlumnoExpansion(alumno.id)}
-                          className="hover:bg-slate-800/20 transition-colors cursor-pointer"
+                          className="hover:bg-bg-main/30 transition-colors cursor-pointer group"
                         >
-                          <td className="px-6 py-3">{alumno.numeroLista}</td>
-                          <td className="px-6 py-3 font-mono text-slate-400">{alumno.matricula}</td>
-                          <td className="px-6 py-3">
-                            <p className="font-semibold text-slate-200">{alumno.nombres}</p>
-                            <p className="text-xs text-slate-500">{alumno.apellidoPaterno} {alumno.apellidoMaterno}</p>
+                          <td className="px-6 py-4 font-bold text-text-secondary">{alumno.numeroLista}</td>
+                          <td className="px-6 py-4 font-black text-xs text-cecyteq-green tracking-wider">{alumno.matricula}</td>
+                          <td className="px-6 py-4">
+                            <p className="font-bold text-text-primary group-hover:text-cecyteq-green transition-colors">{alumno.apellidoPaterno} {alumno.apellidoMaterno}</p>
+                            <p className="text-xs text-text-secondary">{alumno.nombres}</p>
                           </td>
-                          <td className="px-6 py-3">{alumno.turno}</td>
-                          <td className="px-6 py-3 text-slate-200 text-xs">{alumno.correo}</td>
-                          <td className="px-6 py-3">{alumno.faltas}</td>
-                          <td className="px-6 py-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getEstatusColor(alumno.estatus)}`}>
+                          <td className="px-6 py-4 text-xs font-bold">{alumno.turno}</td>
+                          <td className="px-6 py-4 text-text-secondary text-xs font-medium">{alumno.correo}</td>
+                          <td className="px-6 py-4">
+                            <span className={`font-bold ${alumno.faltas > 5 ? 'text-cecyteq-orange' : 'text-cecyteq-green'}`}>
+                              {alumno.faltas} faltas
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border ${getEstatusColor(alumno.estatus)}`}>
                               {alumno.estatus}
                             </span>
                           </td>
-                          <td className="px-6 py-3 text-right"></td>
                         </tr>
                         {expandedAlumnos.has(alumno.id) && (
-                          <tr className="bg-slate-800/10">
-                            <td colSpan={8} className="px-6 py-4">
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                                  <div>
-                                    <p className="text-slate-400 font-medium">Edad:</p>
-                                    <p className="text-slate-200">{alumno.edad || 'No especificada'}</p>
+                          <tr className="bg-bg-main/40">
+                            <td colSpan={7} className="px-8 py-6">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4">
+                                  <h4 className="text-[10px] font-black uppercase tracking-widest text-text-secondary border-b border-border-subtle pb-2">Información Personal</h4>
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <p className="text-[10px] text-text-secondary font-bold uppercase">Edad</p>
+                                      <p className="text-sm font-bold">{alumno.edad || '-'}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-text-secondary font-bold uppercase">Teléfono</p>
+                                      <p className="text-sm font-bold">{alumno.telefono || '-'}</p>
+                                    </div>
                                   </div>
                                   <div>
-                                    <p className="text-slate-400 font-medium">Teléfono:</p>
-                                    <p className="text-slate-200">{alumno.telefono || 'No especificado'}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-slate-400 font-medium">Dirección:</p>
-                                    <p className="text-slate-200">{alumno.direccion || 'No especificada'}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-slate-400 font-medium">Contacto de Emergencia:</p>
-                                    <p className="text-slate-200">{alumno.contactoEmergenciaNombre || 'No especificado'}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-slate-400 font-medium">Teléfono de Emergencia:</p>
-                                    <p className="text-slate-200">{alumno.contactoEmergenciaTelefono || 'No especificado'}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-slate-400 font-medium">Observaciones:</p>
-                                    <p className="text-slate-200">{alumno.observaciones || 'Ninguna'}</p>
+                                    <p className="text-[10px] text-text-secondary font-bold uppercase">Dirección</p>
+                                    <p className="text-sm font-bold">{alumno.direccion || '-'}</p>
                                   </div>
                                 </div>
-                                <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-700">
+                                <div className="space-y-4">
+                                  <h4 className="text-[10px] font-black uppercase tracking-widest text-text-secondary border-b border-border-subtle pb-2">Contacto Emergencia</h4>
+                                  <div>
+                                    <p className="text-[10px] text-text-secondary font-bold uppercase">Nombre</p>
+                                    <p className="text-sm font-bold">{alumno.contactoEmergenciaNombre || '-'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] text-text-secondary font-bold uppercase">Teléfono</p>
+                                    <p className="text-sm font-bold">{alumno.contactoEmergenciaTelefono || '-'}</p>
+                                  </div>
+                                </div>
+                                <div className="flex flex-col gap-3 justify-center">
                                   <Link 
                                     href={`/dashboard/alumnos/nuevo?id=${alumno.id}`}
-                                    onClick={e => e.stopPropagation()}
-                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                    className="w-full flex items-center justify-center gap-2 bg-bg-surface border border-border-subtle hover:border-cecyteq-green text-text-primary px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
                                   >
-                                    <Edit size={16} /> Editar
+                                    <Edit size={14} /> Editar Perfil
                                   </Link>
                                   <button
-                                    onClick={(e) => { e.stopPropagation(); generateBoletaPDF(alumno); }}
-                                    className="flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                    onClick={() => generateBoletaPDF(alumno)}
+                                    className="w-full flex items-center justify-center gap-2 bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-cecyteq-green hover:text-white transition-all"
                                   >
-                                    <FileDown size={16} /> Boleta PDF
+                                    <FileDown size={14} /> Descargar Boleta
                                   </button>
                                   <Link
                                     href={`/dashboard/calificaciones?grupo=${alumno.grupo}&alumno=${alumno.matricula}`}
-                                    onClick={e => e.stopPropagation()}
-                                    className="flex items-center gap-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                    className="w-full flex items-center justify-center gap-2 bg-cecyteq-orange/10 text-cecyteq-orange border border-cecyteq-orange/20 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-cecyteq-orange hover:text-white transition-all"
                                   >
-                                    <GraduationCap size={16} /> Ver Calificaciones
+                                    <GraduationCap size={14} /> Ver Notas
                                   </Link>
                                   <button 
-                                    onClick={(e) => { e.stopPropagation(); handleDelete(alumno); }}
-                                    className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ml-auto"
+                                    onClick={() => handleDelete(alumno)}
+                                    className="w-full flex items-center justify-center gap-2 bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
                                   >
-                                    <Trash2 size={16} /> Eliminar
+                                    <Trash2 size={14} /> Eliminar
                                   </button>
                                 </div>
                               </div>
@@ -464,62 +473,40 @@ export default function AlumnosPage() {
 
       {/* MODAL DE CONFIRMACIÓN DE ELIMINACIÓN */}
       {deleteModal.isOpen && deleteModal.alumno && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-slate-800">
-              <h3 className="text-xl font-bold text-white">Confirmar Eliminación</h3>
-              <p className="text-sm text-slate-400 mt-1">Se eliminará el registro del alumno de la base de datos.</p>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg-main/90 backdrop-blur-md">
+          <div className="bg-bg-surface border border-border-subtle rounded-[2rem] w-full max-w-md shadow-glow p-8 animate-scaleIn">
+            <h3 className="text-2xl font-black text-text-primary tracking-tight mb-2">Eliminar Registro</h3>
+            <p className="text-sm text-text-secondary font-medium mb-6">Esta acción es irreversible y eliminará todo el historial del alumno.</p>
 
-            <div className="p-6 space-y-4">
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                <p className="text-sm text-slate-300">
-                  Para confirmar la eliminación de <span className="font-bold text-white">{deleteModal.alumno.nombres}</span>, 
-                  por favor escribe su <span className="font-semibold">nombre</span> (no importan mayúsculas ni espacios extra):
-                </p>
-                <p className="text-lg font-bold text-red-400 mt-2 text-center">{deleteModal.alumno.nombres}</p>
+            <div className="space-y-6">
+              <div className="bg-bg-main border border-border-subtle rounded-2xl p-5 text-center">
+                <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mb-2">Para confirmar, escribe:</p>
+                <p className="text-xl font-black text-cecyteq-orange tracking-tight">{deleteModal.alumno.nombres}</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-400 mb-2">Nombre del alumno:</label>
-                <input
-                  type="text"
-                  value={deleteInput}
-                  onChange={(e) => setDeleteInput(e.target.value)}
-                  placeholder="Escribe el nombre (sin importar mayúsculas)"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-3 text-slate-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all outline-none"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleConfirmDelete();
-                  }}
-                />
+              <input
+                type="text"
+                value={deleteInput}
+                onChange={(e) => setDeleteInput(e.target.value)}
+                placeholder="Escribe el nombre aquí..."
+                className="w-full bg-bg-main border border-border-subtle rounded-2xl py-4 px-4 text-text-primary focus:border-red-500 outline-none transition-all font-bold text-center"
+              />
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setDeleteModal({ isOpen: false, alumno: null }); setDeleteInput(''); }}
+                  className="flex-1 px-6 py-4 rounded-2xl border border-border-subtle text-text-secondary font-bold hover:bg-bg-main transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={deleteInput.trim().toLowerCase() !== deleteModal.alumno.nombres.trim().toLowerCase()}
+                  className="flex-1 px-6 py-4 rounded-2xl bg-red-600 hover:bg-red-700 disabled:opacity-30 text-white font-black transition-all shadow-lg shadow-red-600/20"
+                >
+                  Confirmar
+                </button>
               </div>
-
-              <p className="text-xs text-slate-500">
-                {deleteInput.trim().toLowerCase() === deleteModal.alumno.nombres.trim().toLowerCase()
-                  ? '✓ El nombre coincide. Puedes eliminar.' 
-                  : deleteInput 
-                    ? '✗ El nombre no coincide.' 
-                    : 'Escribe el nombre para confirmar.'}
-              </p>
-            </div>
-
-            <div className="p-6 border-t border-slate-800 flex gap-3 justify-end">
-              <button
-                onClick={() => {
-                  setDeleteModal({ isOpen: false, alumno: null });
-                  setDeleteInput('');
-                }}
-                className="px-6 py-2.5 rounded-lg font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                disabled={deleteInput.trim().toLowerCase() !== deleteModal.alumno.nombres.trim().toLowerCase()}
-                className="px-6 py-2.5 rounded-lg font-medium bg-red-600 hover:bg-red-700 disabled:bg-slate-700 disabled:cursor-not-allowed text-white transition-colors"
-              >
-                Eliminar Permanentemente
-              </button>
             </div>
           </div>
         </div>

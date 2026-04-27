@@ -4,48 +4,52 @@ import Link from 'next/link';
 
 export default function NuevoGrupoPage() {
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex items-center gap-4">
-        <Link href="/dashboard/docentes/grupos" className="p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors">
+    <div className="space-y-8 max-w-4xl mx-auto animate-fadeInUp">
+      <div className="flex items-center gap-6">
+        <Link href="/dashboard/docentes/grupos" className="w-12 h-12 bg-bg-surface border border-border-subtle rounded-2xl flex items-center justify-center text-text-secondary hover:text-cecyteq-green hover:border-cecyteq-green transition-all shadow-sm">
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users className="text-cyan-500" /> Creación de Grupo Escolar
+          <h2 className="text-3xl font-black text-text-primary flex items-center gap-3 tracking-tight">
+            <Users className="text-cecyteq-green" /> Alta de Grupo Escolar
           </h2>
-          <p className="text-slate-400 text-sm mt-1">Configura un nuevo grupo para asignar materias, docentes y alumnos.</p>
+          <p className="text-text-secondary text-sm mt-1 font-medium">Configura un nuevo grupo para asignar materias, docentes y alumnos.</p>
         </div>
       </div>
 
-      <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-glow">
-        <form className="space-y-8">
+      <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-8 md:p-10 shadow-glow">
+        <form className="space-y-10">
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4 border-b border-slate-800 pb-2">Información del Grupo</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Nombre del Grupo</label>
-                <input type="text" required className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all uppercase" placeholder="Ej. 1A, 3B PROGRAMACIÓN" />
+            <div className="flex items-center gap-3 mb-8 border-b border-border-subtle pb-4">
+              <div className="w-2 h-8 bg-cecyteq-green rounded-full"></div>
+              <h3 className="text-xl font-black text-text-primary uppercase tracking-tight">Detalles del Grupo</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Identificador del Grupo</label>
+                <input type="text" required className="w-full bg-bg-main border border-border-subtle rounded-2xl px-5 py-4 text-text-primary font-black focus:border-cecyteq-green outline-none transition-all uppercase tracking-wider" placeholder="Ej. 1A, 3B PROGRAMACIÓN" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Turno</label>
-                <select required className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all appearance-none">
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Turno Escolar</label>
+                <select required className="w-full bg-bg-main border border-border-subtle rounded-2xl px-5 py-4 text-text-primary focus:border-cecyteq-green outline-none transition-all appearance-none font-bold">
                   <option value="Matutino">Matutino</option>
                   <option value="Vespertino">Vespertino</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-2">Número Estimado de Materias</label>
-                <input type="number" defaultValue={9} min={1} max={15} required className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all" />
+              <div className="space-y-2">
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-widest ml-1">Carga Académica (Materias)</label>
+                <input type="number" defaultValue={9} min={1} max={15} required className="w-full bg-bg-main border border-border-subtle rounded-2xl px-5 py-4 text-text-primary focus:border-cecyteq-green outline-none transition-all font-bold" />
               </div>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-slate-800 flex justify-end gap-4">
-            <Link href="/dashboard/docentes/grupos" className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 font-medium hover:bg-slate-800 transition-colors">
+          <div className="pt-10 border-t border-border-subtle flex justify-end gap-4">
+            <Link href="/dashboard/docentes/grupos" className="px-8 py-4 rounded-2xl border border-border-subtle text-text-secondary font-black uppercase tracking-widest hover:bg-bg-main transition-all">
               Cancelar
             </Link>
-            <button type="button" className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-medium flex items-center gap-2 transition-colors shadow-lg shadow-cyan-500/20">
-              <Save size={20} /> Guardar Grupo
+            <button type="button" className="px-10 py-4 rounded-2xl bg-cecyteq-green hover:bg-cecyteq-green/90 text-white font-black uppercase tracking-widest flex items-center gap-3 transition-all shadow-lg shadow-cecyteq-green/20 hover:scale-[1.02]">
+              <Save size={20} /> Guardar Registro
             </button>
           </div>
         </form>

@@ -83,16 +83,16 @@ async function main() {
   const adminRole = await prisma.rol.findUnique({ where: { nombre: 'admin' } });
   if (adminRole) {
     await prisma.usuario.upsert({
-      where: { email: 'admin@cecyteq.edu.mx' },
+      where: { email: 'eduardosanchez@cecyteq.edu.mx' },
       update: {},
       create: {
-        email: 'admin@cecyteq.edu.mx',
+        email: 'eduardosanchez@cecyteq.edu.mx',
         passwordHash: '1234',
-        nombreCompleto: 'Eduardo Díaz',
+        nombreCompleto: 'Eduardo Sánchez',
         rolId: adminRole.id,
       },
     });
-    console.log('✅ Usuario Administrador (Eduardo Díaz) creado');
+    console.log('✅ Usuario Administrador (Eduardo Sánchez) creado');
   }
 
   // 4. Crear un Grupo de prueba

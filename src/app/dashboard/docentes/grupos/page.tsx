@@ -23,79 +23,79 @@ export default async function GruposPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-8 animate-fadeInUp">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Users className="text-cyan-500" /> Gestión de Grupos
+          <h2 className="text-3xl font-black text-text-primary flex items-center gap-3 tracking-tight">
+            <Users className="text-cecyteq-green" /> Gestión de Grupos
           </h2>
-          <p className="text-slate-400 text-sm mt-1">Administración de grupos, turnos y materias impartidas.</p>
+          <p className="text-text-secondary text-sm mt-1 font-medium">Administración de grupos, turnos y materias impartidas.</p>
         </div>
-        <div className="flex gap-2">
-          <button className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-cyan-500/20">
+        <div className="flex gap-3">
+          <button className="bg-cecyteq-green hover:bg-cecyteq-green/90 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-cecyteq-green/20 flex items-center gap-2">
             <Plus size={18} /> Crear Grupo
           </button>
         </div>
       </div>
 
-      <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
-        <Search className="text-slate-400" size={20} />
+      <div className="bg-bg-surface border border-border-subtle rounded-2xl p-5 flex items-center gap-4 shadow-inner">
+        <Search className="text-text-secondary" size={20} />
         <input 
           type="text" 
           placeholder="Buscar grupo por nombre o turno..." 
           disabled
-          className="bg-transparent border-none outline-none text-slate-200 w-full placeholder-slate-600 opacity-50 cursor-not-allowed"
+          className="bg-transparent border-none outline-none text-text-primary w-full placeholder-text-secondary/40 font-bold opacity-60 cursor-not-allowed"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {grupos.length === 0 ? (
-          <div className="col-span-full bg-slate-950/50 border border-slate-800 rounded-2xl p-8 text-center text-slate-500">
-            No hay grupos registrados en la plataforma.
+          <div className="col-span-full bg-bg-surface border border-border-subtle rounded-[2.5rem] p-16 text-center text-text-secondary font-medium shadow-inner">
+            No hay grupos registrados en la plataforma académica.
           </div>
         ) : (
           grupos.map((grupo) => (
-            <div key={grupo.id} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-6 shadow-glow hover:border-slate-700 transition-colors">
-              <div className="flex justify-between items-start mb-4">
+            <div key={grupo.id} className="group bg-bg-surface border border-border-subtle rounded-[2rem] p-8 shadow-glow hover:border-cecyteq-green/50 transition-all hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-white">{grupo.nombre}</h3>
-                  <p className="text-sm text-cyan-400">{grupo.turno}</p>
+                  <h3 className="text-3xl font-black text-text-primary tracking-tighter group-hover:text-cecyteq-green transition-colors">{grupo.nombre}</h3>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cecyteq-orange mt-1">{grupo.turno}</p>
                 </div>
-                <div className="bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg text-center">
-                  <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Alumnos</p>
-                  <p className="text-lg font-bold text-slate-200">{grupo._count.alumnos}</p>
+                <div className="bg-bg-main border border-border-subtle px-4 py-3 rounded-2xl text-center shadow-sm">
+                  <p className="text-[9px] text-text-secondary font-black uppercase tracking-wider mb-1">Alumnos</p>
+                  <p className="text-xl font-black text-cecyteq-green">{grupo._count.alumnos}</p>
                 </div>
               </div>
               
-              <div className="space-y-3 pt-4 border-t border-slate-800/50">
-                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-2">
-                  <BookOpen size={14} /> Materias ({grupo.docenteGrupos.length})
+              <div className="space-y-4 pt-6 border-t border-border-subtle/50">
+                <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.15em] flex items-center gap-2">
+                  <BookOpen size={14} className="text-cecyteq-green" /> Materias ({grupo.docenteGrupos.length})
                 </p>
                 
                 <div className="space-y-2">
                   {grupo.docenteGrupos.length === 0 ? (
-                    <p className="text-sm text-slate-500 italic">No hay materias asignadas.</p>
+                    <p className="text-sm text-text-secondary italic font-medium px-2">Sin materias vinculadas.</p>
                   ) : (
                     grupo.docenteGrupos.slice(0, 3).map(dg => (
-                      <div key={dg.id} className="flex justify-between items-center bg-slate-900/50 p-2 rounded-lg">
-                        <span className="text-sm text-slate-300 font-medium truncate max-w-[120px]">{dg.materia}</span>
-                        <span className="text-xs text-slate-500 truncate max-w-[100px]" title={`${dg.docente.nombres} ${dg.docente.apellidos}`}>
-                          {dg.docente.nombres.split(' ')[0]} {dg.docente.apellidos.split(' ')[0]}
+                      <div key={dg.id} className="flex justify-between items-center bg-bg-main p-3 rounded-xl border border-border-subtle/30">
+                        <span className="text-xs text-text-primary font-bold truncate max-w-[130px]">{dg.materia}</span>
+                        <span className="text-[9px] font-black uppercase text-text-secondary truncate max-w-[90px]" title={`${dg.docente.nombres} ${dg.docente.apellidos}`}>
+                          {dg.docente.apellidos.split(' ')[0]}
                         </span>
                       </div>
                     ))
                   )}
                   {grupo.docenteGrupos.length > 3 && (
-                    <p className="text-xs text-slate-500 text-center pt-1">+ {grupo.docenteGrupos.length - 3} materias más</p>
+                    <p className="text-[10px] text-cecyteq-orange font-black text-center pt-2 uppercase tracking-widest">+ {grupo.docenteGrupos.length - 3} adicionales</p>
                   )}
                 </div>
               </div>
               
-              <div className="mt-6 flex gap-2">
-                <button className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg text-xs font-medium transition-colors">
+              <div className="mt-8 flex gap-3">
+                <button className="flex-[2] bg-bg-main border border-border-subtle hover:bg-bg-surface text-text-primary py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
                   Ver Detalles
                 </button>
-                <button className="flex-1 border border-slate-700 hover:bg-slate-800 text-slate-300 py-2 rounded-lg text-xs font-medium transition-colors">
+                <button className="flex-1 border border-border-subtle hover:border-cecyteq-orange text-text-secondary py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
                   Editar
                 </button>
               </div>

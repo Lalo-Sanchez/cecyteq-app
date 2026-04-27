@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Bell, UserCircle, Settings, LogOut, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Bell, UserCircle, LogOut, Clock, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { getNotificaciones, marcarComoLeida } from '@/actions/notifications';
 
@@ -28,13 +28,11 @@ export default function TopBar() {
         }
       };
       loadNotif();
-      // Polling cada 30 segundos
       const interval = setInterval(loadNotif, 30000);
       return () => clearInterval(interval);
     }
   }, [userId]);
 
-  // Cerrar dropdown al hacer click afuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
@@ -53,7 +51,7 @@ export default function TopBar() {
   };
 
   const getUserName = () => {
-    if (role === 'admin') return 'Lalo Diaz';
+    if (role === 'admin') return 'Eduardo Sánchez';
     if (role === 'docente') return 'Docente Titular';
     if (role === 'alumno') return 'Alumno CECYTEQ';
     return 'Usuario';
@@ -63,7 +61,7 @@ export default function TopBar() {
     switch(role) {
       case 'admin': return 'Director General';
       case 'docente': return 'Docente';
-      case 'alumno': return 'Alumno';
+      case 'alumno': return 'Estudiante';
       default: return 'Usuario';
     }
   };
@@ -71,71 +69,76 @@ export default function TopBar() {
   const unreadCount = notificaciones.filter(n => !n.leida).length;
 
   return (
-    <header className="h-20 border-b border-slate-800/60 bg-slate-950/50 backdrop-blur-md flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20">
+    <header className="h-20 border-b border-border-subtle bg-bg-main/70 backdrop-blur-xl flex items-center justify-between px-8 lg:px-12 sticky top-0 z-20">
       <div className="flex items-center gap-4">
+        {/* Espacio para breadcrumbs o búsqueda futura */}
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-8">
         
         {/* Notificaciones */}
         <div className="relative" ref={notifRef}>
           <button 
             onClick={() => setShowNotif(!showNotif)}
-            className={`p-2 transition-colors rounded-full relative ${showNotif ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}`}
+            className={`w-12 h-12 flex items-center justify-center transition-all rounded-2xl relative border ${showNotif ? 'bg-bg-surface border-cecyteq-orange text-cecyteq-orange shadow-glow' : 'text-text-secondary hover:text-cecyteq-orange border-border-subtle hover:bg-bg-surface'}`}
           >
-            <Bell size={22} />
+            <Bell size={22} className={showNotif ? 'animate-bounce' : ''} />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-[10px] text-white flex items-center justify-center font-bold rounded-full border-2 border-slate-950">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-cecyteq-orange text-[9px] text-white flex items-center justify-center font-black rounded-lg border-2 border-bg-main shadow-lg">
                 {unreadCount}
               </span>
             )}
           </button>
           
           {showNotif && (
-            <div className="absolute right-0 mt-3 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-glow overflow-hidden z-50 animate-in fade-in slide-in-from-top-4">
-              <div className="p-4 border-b border-slate-800 flex justify-between items-center">
-                <h3 className="font-semibold text-white">Notificaciones</h3>
-                <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-full">{unreadCount} Nuevas</span>
+            <div className="absolute right-0 mt-4 w-96 bg-bg-surface border border-border-subtle rounded-[2rem] shadow-glow-lg overflow-hidden z-50 animate-scaleIn">
+              <div className="p-6 border-b border-border-subtle flex justify-between items-center bg-bg-main/30">
+                <h3 className="font-black text-text-primary uppercase tracking-widest text-xs">Notificaciones</h3>
+                <span className="text-[9px] font-black uppercase tracking-tighter text-white bg-cecyteq-orange px-3 py-1 rounded-full">{unreadCount} Pendientes</span>
               </div>
-              <div className="max-h-80 overflow-y-auto">
+              <div className="max-h-[30rem] overflow-y-auto">
                 {notificaciones.length === 0 ? (
-                  <div className="p-8 text-center text-slate-500 text-xs">
-                    No tienes notificaciones pendientes.
+                  <div className="p-12 text-center text-text-secondary/40 text-xs font-black uppercase tracking-widest italic">
+                    Bandeja vacía
                   </div>
                 ) : (
                   notificaciones.map((n) => (
                     <div 
                       key={n.id} 
                       onClick={() => handleMarcarLeida(n.id)}
-                      className={`p-4 border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors cursor-pointer flex gap-3 ${!n.leida ? 'bg-emerald-500/5' : 'opacity-60'}`}
+                      className={`p-6 border-b border-border-subtle/50 hover:bg-bg-main/50 transition-colors cursor-pointer flex gap-4 ${!n.leida ? 'bg-cecyteq-green/[0.03]' : 'opacity-40'}`}
                     >
-                      <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${!n.leida ? 'bg-emerald-500' : 'bg-slate-700'}`}></div>
-                      <div>
-                        <p className={`text-sm ${!n.leida ? 'text-slate-100 font-medium' : 'text-slate-400'}`}>{n.mensaje}</p>
-                        <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-                          <Clock size={10} /> {new Date(n.creadoEn).toLocaleString()}
+                      <div className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${!n.leida ? 'bg-cecyteq-green shadow-glow' : 'bg-text-secondary/20'}`}></div>
+                      <div className="space-y-1">
+                        <p className={`text-sm leading-relaxed ${!n.leida ? 'text-text-primary font-bold' : 'text-text-secondary'}`}>{n.mensaje}</p>
+                        <p className="text-[9px] text-text-secondary/60 font-black uppercase tracking-widest flex items-center gap-2">
+                          <Clock size={12} className="text-cecyteq-orange" /> {new Date(n.creadoEn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
                     </div>
                   ))
                 )}
               </div>
-              <div className="p-3 text-center border-t border-slate-800 bg-slate-950/50">
-                <button className="text-xs text-emerald-400 hover:text-emerald-300 font-medium">Ver todas</button>
+              <div className="p-4 text-center border-t border-border-subtle bg-bg-main/50">
+                <button className="text-[10px] font-black uppercase tracking-widest text-cecyteq-green hover:text-cecyteq-green/80 transition-colors">Marcar todas como leídas</button>
               </div>
             </div>
           )}
         </div>
 
         {/* Perfil */}
-        <Link href="/dashboard/perfil" className="flex items-center gap-3 border-l border-slate-800 pl-6 group cursor-pointer hover:opacity-80 transition-opacity">
+        <Link href="/dashboard/perfil" className="flex items-center gap-4 border-l border-border-subtle pl-8 group cursor-pointer hover:opacity-90 transition-all">
           <div className="text-right hidden md:block">
-            <p className="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">{getUserName()}</p>
-            <p className="text-xs text-slate-500 font-medium">{getRoleName()}</p>
+            <p className="text-sm font-black text-text-primary tracking-tight group-hover:text-cecyteq-green transition-colors uppercase">{getUserName()}</p>
+            <p className="text-[10px] text-cecyteq-orange font-black uppercase tracking-widest mt-0.5">{getRoleName()}</p>
           </div>
           <div className="relative">
-            <UserCircle size={40} className="text-slate-400 group-hover:text-emerald-400 transition-colors" />
-            <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+            <div className="w-12 h-12 bg-bg-surface border border-border-subtle rounded-2xl flex items-center justify-center text-text-secondary group-hover:border-cecyteq-green group-hover:text-cecyteq-green transition-all shadow-inner">
+              <UserCircle size={32} />
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-cecyteq-green border-2 border-bg-main rounded-lg shadow-sm flex items-center justify-center">
+               <Shield size={8} className="text-white" />
+            </div>
           </div>
         </Link>
       </div>

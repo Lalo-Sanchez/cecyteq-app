@@ -83,7 +83,7 @@ function AccionBadge({ tipo, matricula }: { tipo: 'Recuperación' | 'Extraordina
     },
     'Extraordinario': {
       icon: <BookOpen size={12} />,
-      cls: 'bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20',
+      cls: 'bg-cecyteq-orange/10 text-cecyteq-orange border border-cecyteq-orange/30 hover:bg-cecyteq-orange/20',
       label: 'Extraordinario',
       href: `/dashboard/tramites/nuevo?alumno=${matricula}&tipo=Extraordinario`,
     },
@@ -99,7 +99,7 @@ function AccionBadge({ tipo, matricula }: { tipo: 'Recuperación' | 'Extraordina
     <Link
       href={config.href}
       onClick={e => e.stopPropagation()}
-      className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap ${config.cls}`}
+      className={`inline-flex items-center gap-1 text-[10px] font-black uppercase px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap tracking-tighter ${config.cls}`}
       title={tipo}
     >
       {config.icon} {config.label}
@@ -208,16 +208,16 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeInUp">
       {/* Barra de filtros */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-bg-surface border border-border-subtle rounded-2xl p-5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-glow">
         <div className="flex flex-col md:flex-row gap-3 w-full flex-1 flex-wrap">
           <div className="relative w-full md:w-52">
-            <Filter size={16} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
+            <Filter size={16} className="absolute inset-y-0 left-3 my-auto text-text-secondary pointer-events-none" />
             <select
               value={selectedGrupoId}
               onChange={handleGrupoChange}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-xl pl-9 pr-3 py-2.5 appearance-none focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full bg-bg-main border border-border-subtle text-text-primary text-sm rounded-xl pl-9 pr-3 py-2.5 appearance-none focus:border-cecyteq-green outline-none font-bold"
             >
               <option value="">Todos los grupos</option>
               {grupos.map(g => <option key={g.id} value={g.id.toString()}>{g.nombre}</option>)}
@@ -225,12 +225,12 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
           </div>
 
           <div className="relative w-full md:w-52">
-            <Filter size={16} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
+            <Filter size={16} className="absolute inset-y-0 left-3 my-auto text-text-secondary pointer-events-none" />
             <select
               value={selectedMateria}
               onChange={e => setSelectedMateria(e.target.value)}
               disabled={materiasUnicas.length === 0}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-xl pl-9 pr-3 py-2.5 appearance-none focus:ring-blue-500 focus:border-blue-500 outline-none disabled:opacity-50"
+              className="w-full bg-bg-main border border-border-subtle text-text-primary text-sm rounded-xl pl-9 pr-3 py-2.5 appearance-none focus:border-cecyteq-green outline-none disabled:opacity-50 font-bold"
             >
               <option value="">Todas las materias</option>
               {materiasUnicas.map(m => <option key={m} value={m}>{m}</option>)}
@@ -238,13 +238,13 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
           </div>
 
           <div className="relative flex-1 min-w-[180px]">
-            <Search size={16} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
+            <Search size={16} className="absolute inset-y-0 left-3 my-auto text-text-secondary pointer-events-none" />
             <input
               type="text"
               placeholder="Buscar alumno..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-xl pl-9 py-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full bg-bg-main border border-border-subtle text-text-primary text-sm rounded-xl pl-9 py-2.5 focus:border-cecyteq-green outline-none font-bold"
             />
           </div>
         </div>
@@ -252,84 +252,81 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
         <button
           onClick={handleExportExcel}
           disabled={alumnosList.length === 0}
-          className="shrink-0 w-full md:w-auto bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 disabled:opacity-40 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2"
+          className="shrink-0 w-full md:w-auto bg-cecyteq-green/10 hover:bg-cecyteq-green text-cecyteq-green hover:text-white border border-cecyteq-green/30 disabled:opacity-20 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
         >
-          <FileDown size={18} /> Exportar Excel
+          <FileDown size={18} /> Excel
         </button>
       </div>
 
       {/* Leyenda de tipos de acción */}
-      <div className="flex flex-wrap gap-3 text-xs">
-        <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-lg">
-          <Star size={12} /> <strong>Recuperación</strong> — 80%+ asistencia y ≥ 2 parciales aprobados
+      <div className="flex flex-wrap gap-3">
+        <div className="flex items-center gap-2 bg-bg-surface border border-border-subtle text-amber-400 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
+          <Star size={12} /> Recuperación
         </div>
-        <div className="flex items-center gap-1.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 px-3 py-1.5 rounded-lg">
-          <BookOpen size={12} /> <strong>Extraordinario</strong> — 80%+ asistencia y ≥ 2 parciales reprobados
+        <div className="flex items-center gap-2 bg-bg-surface border border-border-subtle text-cecyteq-orange px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
+          <BookOpen size={12} /> Extraordinario
         </div>
-        <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-lg">
-          <RefreshCw size={12} /> <strong>Recursamiento</strong> — Menos del 80% de asistencia
+        <div className="flex items-center gap-2 bg-bg-surface border border-border-subtle text-red-400 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
+          <RefreshCw size={12} /> Recursamiento
         </div>
       </div>
 
       {/* Contador */}
-      <div className="flex items-center gap-2 text-sm text-slate-400">
-        <span className="font-bold text-2xl text-white">{alumnosList.length}</span>
-        <span>alumnos con materias reprobadas</span>
-        {selectedMateria && <span>en <strong className="text-red-400">"{selectedMateria}"</strong></span>}
+      <div className="flex items-center gap-3 text-sm text-text-secondary font-medium px-2">
+        <span className="font-black text-3xl text-text-primary tracking-tighter">{alumnosList.length}</span>
+        <span className="uppercase tracking-widest text-[10px] font-black">alumnos en riesgo académico</span>
+        {selectedMateria && <span className="bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 text-xs font-bold">"{selectedMateria}"</span>}
       </div>
 
       {/* Tabla pivotada */}
       {alumnosList.length === 0 ? (
-        <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="text-emerald-500" size={32} />
+        <div className="bg-bg-surface/50 border border-border-subtle rounded-3xl p-16 text-center shadow-inner">
+          <div className="w-20 h-20 bg-cecyteq-green/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="text-cecyteq-green" size={40} />
           </div>
-          <p className="text-lg text-slate-300 font-semibold">¡Excelente!</p>
-          <p className="text-slate-500 mt-1">No hay alumnos reprobados para este criterio.</p>
+          <p className="text-xl text-text-primary font-black tracking-tight uppercase">Todo en orden</p>
+          <p className="text-text-secondary mt-2 font-medium">No se detectaron alumnos en riesgo con estos filtros.</p>
         </div>
       ) : (
-        <div className="bg-slate-950/50 border border-red-900/30 rounded-2xl overflow-hidden shadow-glow">
+        <div className="bg-bg-surface border border-border-subtle rounded-[2rem] overflow-hidden shadow-glow">
           <div className="overflow-x-auto max-h-[640px] overflow-y-auto">
             <table className="w-full text-left text-xs whitespace-nowrap">
-              <thead className="sticky top-0 z-10 bg-slate-900 border-b border-red-900/40 shadow-sm">
-                {/* Fila 1: identidad + nombre de materia + Asistencia */}
-                <tr className="text-slate-400">
-                  <th rowSpan={2} className="px-4 py-3 font-medium border-r border-slate-800">#</th>
-                  <th rowSpan={2} className="px-4 py-3 font-medium border-r border-slate-800">Matrícula</th>
-                  <th rowSpan={2} className="px-4 py-3 font-medium border-r border-slate-800 min-w-[180px]">Nombre Completo</th>
-                  <th rowSpan={2} className="px-4 py-3 font-medium text-center border-r border-slate-800 w-16">Faltas</th>
+              <thead className="sticky top-0 z-10 bg-bg-main border-b border-border-subtle">
+                <tr className="text-text-secondary text-[10px] font-black uppercase tracking-widest">
+                  <th rowSpan={2} className="px-6 py-4 border-r border-border-subtle text-center">#</th>
+                  <th rowSpan={2} className="px-6 py-4 border-r border-border-subtle">Matrícula</th>
+                  <th rowSpan={2} className="px-6 py-4 border-r border-border-subtle min-w-[200px]">Estudiante</th>
+                  <th rowSpan={2} className="px-6 py-4 text-center border-r border-border-subtle w-20">Faltas</th>
                   {columnMaterias.map(mat => (
-                    <th key={mat} colSpan={5} className="px-3 py-2 text-center font-semibold text-red-400 border-r border-slate-800 border-b border-slate-700 bg-red-950/20">
+                    <th key={mat} colSpan={5} className="px-3 py-3 text-center font-black text-cecyteq-orange border-r border-border-subtle bg-bg-surface">
                       {mat}
                     </th>
                   ))}
                 </tr>
-                {/* Fila 2: P1 P2 P3 Final Acción por materia */}
-                <tr className="text-slate-500 bg-slate-900/80">
+                <tr className="text-[9px] font-black uppercase tracking-widest bg-bg-main/80 text-text-secondary">
                   {columnMaterias.map(mat => (
                     <React.Fragment key={mat}>
-                      <th className="px-3 py-2 text-center font-medium w-10">P1</th>
-                      <th className="px-3 py-2 text-center font-medium w-10">P2</th>
-                      <th className="px-3 py-2 text-center font-medium w-10">P3</th>
-                      <th className="px-3 py-2 text-center font-bold w-14 text-red-400">Final</th>
-                      <th className="px-3 py-2 text-center font-medium w-28 border-r border-slate-800">Acción</th>
+                      <th className="px-3 py-3 text-center border-b border-border-subtle">P1</th>
+                      <th className="px-3 py-3 text-center border-b border-border-subtle">P2</th>
+                      <th className="px-3 py-3 text-center border-b border-border-subtle">P3</th>
+                      <th className="px-3 py-3 text-center font-black text-red-500 border-b border-border-subtle">Fin</th>
+                      <th className="px-3 py-3 text-center border-r border-border-subtle border-b border-border-subtle">Acción</th>
                     </React.Fragment>
                   ))}
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-800/40 text-slate-300">
+              <tbody className="divide-y divide-border-subtle text-text-primary">
                 {alumnosList.map(alumno => (
-                  <tr key={alumno.matricula} className="hover:bg-red-900/10 transition-colors">
-                    <td className="px-4 py-3 text-slate-500 border-r border-slate-800/50">{alumno.numeroLista}</td>
-                    <td className="px-4 py-3 font-mono text-slate-400 border-r border-slate-800/50">{alumno.matricula}</td>
-                    <td className="px-4 py-3 font-semibold uppercase border-r border-slate-800/50">
+                  <tr key={alumno.matricula} className="group hover:bg-bg-main/50 transition-colors">
+                    <td className="px-6 py-4 text-text-secondary font-bold text-center border-r border-border-subtle">{alumno.numeroLista}</td>
+                    <td className="px-6 py-4 font-black text-xs text-cecyteq-green tracking-wider border-r border-border-subtle">{alumno.matricula}</td>
+                    <td className="px-6 py-4 font-bold uppercase border-r border-border-subtle group-hover:text-cecyteq-green transition-colors">
                       {alumno.apellidoPaterno} {alumno.apellidoMaterno} {alumno.nombres}
                     </td>
-                    {/* Columna de faltas con indicador de semáforo */}
-                    <td className={`px-4 py-3 text-center font-bold border-r border-slate-800/50 ${alumno.tieneAsistencia ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <td className={`px-6 py-4 text-center font-black border-r border-border-subtle ${alumno.tieneAsistencia ? 'text-cecyteq-green' : 'text-red-500'}`}>
                       {alumno.faltas}
-                      <span className={`ml-1 text-[9px] ${alumno.tieneAsistencia ? 'text-emerald-600' : 'text-red-600'}`}>
+                      <span className={`ml-2 text-[9px] ${alumno.tieneAsistencia ? 'text-cecyteq-green/50' : 'text-red-500/50'}`}>
                         {alumno.tieneAsistencia ? '✓' : '✗'}
                       </span>
                     </td>
@@ -338,22 +335,22 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
                       const cal = alumno.materias[mat];
                       if (!cal) return (
                         <React.Fragment key={mat}>
-                          <td className="px-3 py-3 text-center text-slate-700">—</td>
-                          <td className="px-3 py-3 text-center text-slate-700">—</td>
-                          <td className="px-3 py-3 text-center text-slate-700">—</td>
-                          <td className="px-3 py-3 text-center text-slate-700">—</td>
-                          <td className="px-3 py-3 text-center text-slate-700 border-r border-slate-800/50">—</td>
+                          <td className="px-3 py-4 text-center text-text-secondary/20">—</td>
+                          <td className="px-3 py-4 text-center text-text-secondary/20">—</td>
+                          <td className="px-3 py-4 text-center text-text-secondary/20">—</td>
+                          <td className="px-3 py-4 text-center text-text-secondary/20">—</td>
+                          <td className="px-3 py-4 text-center text-text-secondary/20 border-r border-border-subtle">—</td>
                         </React.Fragment>
                       );
                       return (
                         <React.Fragment key={mat}>
-                          <td className="px-3 py-3 text-center">{cal.parcial1 ?? '—'}</td>
-                          <td className="px-3 py-3 text-center">{cal.parcial2 ?? '—'}</td>
-                          <td className="px-3 py-3 text-center">{cal.parcial3 ?? '—'}</td>
-                          <td className="px-3 py-3 text-center font-bold text-red-400">
+                          <td className="px-3 py-4 text-center font-medium">{cal.parcial1 ?? '—'}</td>
+                          <td className="px-3 py-4 text-center font-medium">{cal.parcial2 ?? '—'}</td>
+                          <td className="px-3 py-4 text-center font-medium">{cal.parcial3 ?? '—'}</td>
+                          <td className="px-3 py-4 text-center font-black text-red-500 bg-red-500/5">
                             {cal.final !== null ? cal.final.toFixed(1) : '—'}
                           </td>
-                          <td className="px-3 py-2 text-center border-r border-slate-800/50">
+                          <td className="px-3 py-3 text-center border-r border-border-subtle">
                             <AccionBadge tipo={cal.tipoAccion} matricula={alumno.matricula} />
                           </td>
                         </React.Fragment>

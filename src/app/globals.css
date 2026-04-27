@@ -1,68 +1,78 @@
 @import "tailwindcss";
 
+@theme {
+  --color-cecyteq-green: #3BA64A;
+  --color-cecyteq-orange: #F06C22;
+  --color-bg-main: #121212;
+  --color-bg-surface: #1E1E1E;
+  --color-border-subtle: #333333;
+  --color-text-primary: #F3F4F6;
+  --color-text-secondary: #9CA3AF;
+}
+
 :root {
   color-scheme: dark;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  
+  /* Variables CSS para uso directo si es necesario */
+  --bg-main: #121212;
+  --bg-surface: #1E1E1E;
+  --border-light: #333333;
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --cecyteq-green: #3BA64A;
+  --cecyteq-orange: #F06C22;
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-main);
 }
 
 body {
   min-height: 100vh;
-  background-image:
-    radial-gradient(circle at top left, rgba(241,100,33,0.15), transparent 24%),
-    radial-gradient(circle at 80% 15%, rgba(34,177,76,0.12), transparent 20%),
-    linear-gradient(180deg, #07111f 0%, #08151f 48%, #01040a 100%);
-  color: #e2e8f0;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   background-attachment: fixed;
+  margin: 0;
 }
 
+/* Efecto de profundidad sutil con gradientes basados en la nueva paleta */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top left, rgba(241,100,33,0.06), transparent 28%),
-              radial-gradient(circle at 90% 10%, rgba(34,177,76,0.08), transparent 22%),
-              linear-gradient(180deg, transparent 0%, rgba(15,23,42,0.2) 55%, rgba(2,6,17,0.35) 100%);
+  background: radial-gradient(circle at top left, rgba(240, 108, 34, 0.05), transparent 30%),
+              radial-gradient(circle at bottom right, rgba(59, 166, 74, 0.05), transparent 30%);
   pointer-events: none;
   z-index: -1;
 }
-
 
 * {
   box-sizing: border-box;
 }
 
-input,
-textarea,
-select,
-button {
-  font: inherit;
-}
-
 @layer utilities {
   .shadow-glow {
-    box-shadow: 0 28px 90px rgba(241, 100, 33, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   }
   .container-frost {
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid rgba(148, 163, 184, 0.12);
-    backdrop-filter: blur(20px);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    backdrop-filter: blur(10px);
   }
   .animate-fadeInUp {
-    animation: fadeInUp 0.8s ease-out both;
+    animation: fadeInUp 0.6s ease-out both;
   }
-  .animate-fadeIn {
-    animation: fadeIn 0.9s ease-out both;
+  .animate-scaleIn {
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -70,11 +80,28 @@ button {
   }
 }
 
-@keyframes fadeIn {
+@keyframes scaleIn {
   from {
     opacity: 0;
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
+    transform: scale(1);
   }
+}
+
+/* Estilización de Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }

@@ -13,8 +13,6 @@ export default function BitacorasPage() {
   useEffect(() => {
     const id = localStorage.getItem('userId');
     if (id) {
-      // Nota: En un sistema real, buscaríamos el docenteId asociado al usuarioId
-      // Aquí simplificamos asumiendo que el ID de usuario docente coincide o se mapea
       setDocenteId(Number(id));
       loadHistorial(Number(id));
     }
@@ -42,91 +40,91 @@ export default function BitacorasPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fadeInUp">
-      <div className="flex items-center justify-between gap-4">
+    <div className="max-w-5xl mx-auto space-y-10 animate-fadeInUp">
+      <div className="flex items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Bitácora Digital</h1>
-          <p className="text-slate-400 text-sm mt-1">Registra tu entrada y salida del plantel para el control de asistencia docente.</p>
+          <h1 className="text-4xl font-black text-text-primary tracking-tighter uppercase">Bitácora Digital</h1>
+          <p className="text-text-secondary font-medium mt-2">Control de asistencia institucional y registro de jornada académica.</p>
         </div>
-        <div className="hidden md:flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-2xl">
-          <Calendar size={18} className="text-emerald-400" />
-          <span className="text-white font-medium">{new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+        <div className="hidden md:flex items-center gap-4 bg-bg-surface border border-border-subtle px-6 py-3 rounded-2xl shadow-sm">
+          <Calendar size={20} className="text-cecyteq-green" />
+          <span className="text-text-primary font-black uppercase text-[10px] tracking-widest">{new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Panel de Acción */}
-        <div className="bg-slate-950/80 border border-slate-800/60 rounded-[2.5rem] p-10 shadow-glow flex flex-col items-center justify-center text-center space-y-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="bg-bg-surface border border-border-subtle rounded-[3rem] p-12 shadow-glow flex flex-col items-center justify-center text-center space-y-10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-cecyteq-green/5 rounded-full blur-[80px]" />
           
-          <div className="w-20 h-20 bg-slate-900 rounded-3xl flex items-center justify-center border border-slate-800 shadow-xl">
-            <Clock size={40} className="text-emerald-400" />
+          <div className="w-24 h-24 bg-bg-main rounded-[2rem] flex items-center justify-center border border-border-subtle shadow-inner group transition-transform hover:scale-105">
+            <Clock size={48} className="text-cecyteq-green group-hover:text-cecyteq-orange transition-colors" />
           </div>
 
-          <div>
-            <h2 className="text-xl font-bold text-white">¿Qué acción deseas realizar?</h2>
-            <p className="text-slate-500 text-xs mt-2 uppercase tracking-widest font-bold">Último registro: <span className="text-emerald-400">{lastAction || 'Ninguno'}</span></p>
+          <div className="space-y-3">
+            <h2 className="text-2xl font-black text-text-primary tracking-tight uppercase">Registro de Jornada</h2>
+            <p className="text-text-secondary text-[10px] font-black uppercase tracking-[0.3em]">Último Estado: <span className={lastAction === 'Entrada' ? 'text-cecyteq-green' : 'text-cecyteq-orange'}>{lastAction || 'Sin registro'}</span></p>
           </div>
 
-          <div className="grid grid-cols-1 w-full gap-4">
+          <div className="grid grid-cols-1 w-full gap-5">
             <button
               onClick={() => handleRegistro('Entrada')}
               disabled={isPending || lastAction === 'Entrada'}
-              className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all shadow-lg ${
+              className={`flex items-center justify-center gap-4 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl ${
                 lastAction === 'Entrada' 
-                ? 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed' 
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20 active:scale-95'
+                ? 'bg-bg-main text-text-secondary/30 border border-border-subtle cursor-not-allowed' 
+                : 'bg-cecyteq-green hover:bg-cecyteq-green/90 text-white shadow-cecyteq-green/20 active:scale-95'
               }`}
             >
-              {isPending ? <Loader2 className="animate-spin" /> : <LogIn size={20} />}
-              Marcar Entrada
+              {isPending ? <Loader2 className="animate-spin" /> : <LogIn size={22} />}
+              Entrada
             </button>
 
             <button
               onClick={() => handleRegistro('Salida')}
               disabled={isPending || lastAction === 'Salida' || !lastAction}
-              className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all shadow-lg ${
+              className={`flex items-center justify-center gap-4 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl ${
                 lastAction === 'Salida' || !lastAction
-                ? 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed' 
-                : 'bg-orange-600 hover:bg-orange-700 text-white shadow-orange-500/20 active:scale-95'
+                ? 'bg-bg-main text-text-secondary/30 border border-border-subtle cursor-not-allowed' 
+                : 'bg-cecyteq-orange hover:bg-cecyteq-orange/90 text-white shadow-cecyteq-orange/20 active:scale-95'
               }`}
             >
-              {isPending ? <Loader2 className="animate-spin" /> : <LogOut size={20} />}
-              Marcar Salida
+              {isPending ? <Loader2 className="animate-spin" /> : <LogOut size={22} />}
+              Salida
             </button>
           </div>
         </div>
 
         {/* Historial Reciente */}
-        <div className="bg-slate-950/50 border border-slate-800/60 rounded-[2.5rem] p-8 shadow-xl flex flex-col">
-          <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
-            <History size={20} className="text-slate-400" />
-            <h3 className="font-bold text-white uppercase text-xs tracking-widest">Actividad Reciente</h3>
+        <div className="bg-bg-surface border border-border-subtle rounded-[3rem] p-10 shadow-glow flex flex-col">
+          <div className="flex items-center gap-4 mb-8 border-b border-border-subtle pb-6">
+            <History size={24} className="text-text-secondary/40" />
+            <h3 className="font-black text-text-primary uppercase text-xs tracking-[0.25em]">Actividad Reciente</h3>
           </div>
 
-          <div className="flex-1 space-y-4 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+          <div className="flex-1 space-y-6 overflow-y-auto max-h-[400px] pr-4 custom-scrollbar">
             {historial.length === 0 ? (
-              <div className="text-center py-10">
-                <p className="text-slate-600 text-sm italic">No hay registros hoy.</p>
+              <div className="text-center py-20">
+                <p className="text-text-secondary/40 text-sm font-black uppercase tracking-widest italic">Sin registros registrados</p>
               </div>
             ) : (
               historial.map((item, idx) => (
-                <div key={item.id} className="flex items-center justify-between p-4 bg-slate-900/50 border border-slate-800 rounded-2xl hover:bg-slate-900 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-xl ${item.tipo === 'Entrada' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-orange-500/10 text-orange-400'}`}>
-                      {item.tipo === 'Entrada' ? <LogIn size={16} /> : <LogOut size={16} />}
+                <div key={item.id} className="flex items-center justify-between p-6 bg-bg-main/30 border border-border-subtle rounded-[1.5rem] group hover:bg-bg-main/50 transition-all">
+                  <div className="flex items-center gap-5">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${item.tipo === 'Entrada' ? 'bg-cecyteq-green/10 text-cecyteq-green border-cecyteq-green/20' : 'bg-cecyteq-orange/10 text-cecyteq-orange border-cecyteq-orange/20'}`}>
+                      {item.tipo === 'Entrada' ? <LogIn size={20} /> : <LogOut size={20} />}
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white">{item.tipo}</p>
-                      <p className="text-[10px] text-slate-500">{new Date(item.timestamp).toLocaleDateString()}</p>
+                      <p className="text-sm font-black text-text-primary uppercase tracking-tight">{item.tipo}</p>
+                      <p className="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1">{new Date(item.timestamp).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-mono text-slate-300">
+                  <div className="text-right space-y-1">
+                    <p className="text-xl font-black text-text-primary tracking-tighter">
                       {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
-                    <p className="text-[10px] text-emerald-500 font-bold flex items-center gap-1 justify-end">
-                      <CheckCircle size={10} /> Registrado
+                    <p className="text-[9px] text-cecyteq-green font-black uppercase tracking-[0.2em] flex items-center gap-1 justify-end">
+                      <CheckCircle size={10} /> Sincronizado
                     </p>
                   </div>
                 </div>

@@ -2,23 +2,29 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, BookOpen, FileText, LogOut, CheckCircle, GraduationCap, Briefcase, Bell, Award, AlertTriangle, Clock } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, FileText, LogOut, CheckCircle, Briefcase, Bell, Award, AlertTriangle, Clock, ShieldCheck } from 'lucide-react';
 
 import { logoutUser } from '@/actions/auth';
+import { useSession } from 'next-auth/react';
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const timer = setTimeout(() => {
-        setRole(localStorage.getItem('userRole'));
-      }, 0);
-      return () => clearTimeout(timer);
+    if (session?.user) {
+      const userRole = (session.user as any).role;
+      setRole(userRole);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userRole', userRole);
+        localStorage.setItem('userId', (session.user as any).id);
+      }
+    } else if (typeof window !== 'undefined') {
+      setRole(localStorage.getItem('userRole'));
     }
-  }, []);
+  }, [session]);
 
   const handleLogout = async () => {
     if (typeof window !== 'undefined') {
@@ -53,14 +59,14 @@ export default function Sidebar() {
   const menuItems = role === 'admin' ? adminMenu : role === 'docente' ? docenteMenu : alumnoMenu;
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col h-full">
-      <div className="h-20 flex items-center gap-3 px-6 border-b border-slate-800">
-        <div className="w-10 h-10 bg-linear-to-br from-emerald-500 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-          <GraduationCap className="text-white w-6 h-6" />
+    <aside className="w-64 bg-bg-surface border-r border-border-subtle hidden md:flex flex-col h-full">
+      <div className="h-24 flex items-center gap-3 px-6 border-b border-border-subtle bg-bg-main/20">
+        <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl p-1.5 shadow-sm group transition-transform hover:scale-110">
+          <img src="/cecyteq_logo.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
-        <div>
-          <h2 className="font-bold text-lg text-white leading-tight">CECYTEQ</h2>
-          <p className="text-[10px] text-orange-400 tracking-widest uppercase">Powered by Lesty</p>
+        <div className="flex flex-col">
+          <h2 className="font-black text-lg text-text-primary leading-none tracking-tighter">CECyTEQ 5</h2>
+          <p className="text-[9px] text-cecyteq-orange font-black tracking-[0.3em] uppercase mt-1">By Lesty</p>
         </div>
       </div>
 
@@ -70,60 +76,60 @@ export default function Sidebar() {
             <button
               onClick={() => router.push('/dashboard')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                pathname === '/dashboard' ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                pathname === '/dashboard' ? 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
               }`}
             >
               <LayoutDashboard size={20} />
-              <span className="font-medium text-sm">Panel de Control</span>
+              <span className="text-xs uppercase tracking-widest">Panel de Control</span>
             </button>
 
             <button
               onClick={() => setServiciosEscolaresAbiertos((prev) => !prev)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                serviciosEscolaresAbiertos ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                serviciosEscolaresAbiertos ? 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
               }`}
             >
               <Users size={20} />
-              <span className="font-medium text-sm">Servicios Escolares</span>
+              <span className="text-xs uppercase tracking-widest">Servicios Escolares</span>
             </button>
 
             {serviciosEscolaresAbiertos && (
-              <div className="ml-8 space-y-1 mt-1">
+              <div className="ml-8 space-y-1 mt-1 border-l border-border-subtle/50 pl-2">
                 <button
                   onClick={() => router.push('/dashboard/alumnos')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/alumnos' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/alumnos' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <CheckCircle size={16} />
-                  <span className="text-sm">Alumnos</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Alumnos</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/tramites')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/tramites' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/tramites' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <FileText size={16} />
-                  <span className="text-sm">Trámites</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Trámites</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/calificaciones')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/calificaciones' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/calificaciones' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <Award size={16} />
-                  <span className="text-sm">Calificaciones</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Calificaciones</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/reprobados')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/reprobados' ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/reprobados' ? 'text-cecyteq-orange font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <AlertTriangle size={16} />
-                  <span className="text-sm">Reprobados</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Reprobados</span>
                 </button>
               </div>
             )}
@@ -131,65 +137,75 @@ export default function Sidebar() {
             <button
               onClick={() => setServiciosDocentesAbiertos((prev) => !prev)}
               className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all ${
-                pathname.startsWith('/dashboard/docentes') || serviciosDocentesAbiertos ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                pathname.startsWith('/dashboard/docentes') || serviciosDocentesAbiertos ? 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
               }`}
             >
               <div className="flex items-center gap-3">
                 <Briefcase size={20} />
-                <span className="font-medium text-sm">Servicios Docentes</span>
+                <span className="text-xs uppercase tracking-widest">Servicios Docentes</span>
               </div>
-              <span className="text-slate-400">{serviciosDocentesAbiertos ? '−' : '+'}</span>
+              <span className="text-[10px]">{serviciosDocentesAbiertos ? '▲' : '▼'}</span>
             </button>
 
             {(serviciosDocentesAbiertos || pathname.startsWith('/dashboard/docentes')) && (
-              <div className="ml-8 space-y-1 mt-1">
+              <div className="ml-8 space-y-1 mt-1 border-l border-border-subtle/50 pl-2">
                 <button
                   onClick={() => router.push('/dashboard/docentes')}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/docentes' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                    pathname === '/dashboard/docentes' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
-                  <Users size={16} />
-                  <span className="text-sm">Resumen</span>
+                  <LayoutDashboard size={16} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Resumen</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/docentes/grupos')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/docentes/grupos' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/docentes/grupos' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <Users size={16} />
-                  <span className="text-sm">Grupos</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Grupos</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/docentes/docentes')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/docentes/docentes' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/docentes/docentes' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <Briefcase size={16} />
-                  <span className="text-sm">Docentes</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Docentes</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/docentes/materias')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/docentes/materias' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/docentes/materias' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <BookOpen size={16} />
-                  <span className="text-sm">Materias</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Materias</span>
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/docentes/avisos')}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                    pathname === '/dashboard/docentes/avisos' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                    pathname === '/dashboard/docentes/avisos' ? 'text-cecyteq-green font-black' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   <Bell size={16} />
-                  <span className="text-sm">Avisos</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Avisos</span>
                 </button>
               </div>
             )}
+
+            <button
+              onClick={() => router.push('/dashboard/administracion')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                pathname === '/dashboard/administracion' ? 'bg-cecyteq-orange/10 text-cecyteq-orange border border-cecyteq-orange/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
+              }`}
+            >
+              <ShieldCheck size={20} />
+              <span className="text-xs uppercase tracking-widest">Administración</span>
+            </button>
           </>
         ) : (
           menuItems.map((item) => (
@@ -197,32 +213,32 @@ export default function Sidebar() {
               key={item.id}
               onClick={() => router.push(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                pathname === item.id ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                pathname === item.id ? 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
               }`}
             >
               {item.icon}
-              <span className="font-medium text-sm">{item.label}</span>
+              <span className="text-xs uppercase tracking-widest">{item.label}</span>
             </button>
           ))
         )}
       </nav>
 
-      <div className="p-4 border-t border-slate-800 space-y-1">
+      <div className="p-4 border-t border-border-subtle space-y-1 bg-bg-main/10">
         <button
           onClick={() => router.push('/dashboard/perfil')}
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-            pathname === '/dashboard/perfil' ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+            pathname === '/dashboard/perfil' ? 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20 font-black' : 'text-text-secondary hover:bg-bg-main/50 hover:text-text-primary border border-transparent font-bold'
           }`}
         >
           <Users size={20} />
-          <span className="font-medium text-sm">Mi Perfil</span>
+          <span className="text-xs uppercase tracking-widest">Mi Perfil</span>
         </button>
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary hover:bg-red-500/10 hover:text-red-400 transition-all font-bold group"
         >
-          <LogOut size={20} />
-          <span className="font-medium text-sm">Cerrar Sesión</span>
+          <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+          <span className="text-xs uppercase tracking-widest">Cerrar Sesión</span>
         </button>
       </div>
     </aside>
