@@ -1,6 +1,8 @@
 import React from 'react';
 import { prisma } from '@/lib/prisma';
-import { Users, Plus, Search, BookOpen } from 'lucide-react';
+import { Users, Search, BookOpen } from 'lucide-react';
+import CrearGrupoModal from './CrearGrupoModal';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +15,8 @@ export default async function GruposPage() {
       generacion: true,
       docenteGrupos: {
         include: {
-          docente: true
+          docente: true,
+          materia: true
         }
       }
     },
@@ -21,6 +24,8 @@ export default async function GruposPage() {
       nombre: 'asc'
     }
   });
+
+  const generaciones = await prisma.generacion.findMany({ orderBy: { creadoEn: 'desc' } });
 
   return (
     <div className="space-y-8 animate-fadeInUp">
@@ -32,9 +37,7 @@ export default async function GruposPage() {
           <p className="text-text-secondary text-sm mt-1 font-medium">Administración de grupos, turnos y materias impartidas.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-cecyteq-green hover:bg-cecyteq-green/90 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-cecyteq-green/20 flex items-center gap-2">
-            <Plus size={18} /> Crear Grupo
-          </button>
+          <CrearGrupoModal generaciones={generaciones} />
         </div>
       </div>
 
@@ -78,9 +81,9 @@ export default async function GruposPage() {
                   ) : (
                     grupo.docenteGrupos.slice(0, 3).map(dg => (
                       <div key={dg.id} className="flex justify-between items-center bg-bg-main p-3 rounded-xl border border-border-subtle/30">
-                        <span className="text-xs text-text-primary font-bold truncate max-w-[130px]">{dg.materia}</span>
+                        <span className="text-xs text-text-primary font-bold truncate max-w-[130px]">{dg.materia.nombre}</span>
                         <span className="text-[9px] font-black uppercase text-text-secondary truncate max-w-[90px]" title={`${dg.docente.nombres} ${dg.docente.apellidos}`}>
-                          {dg.docente.apellidos.split(' ')[0]}
+                          {dg.docente.apellidos?.split(' ')[0] || dg.docente.nombres.split(' ')[0]}
                         </span>
                       </div>
                     ))
@@ -92,12 +95,9 @@ export default async function GruposPage() {
               </div>
               
               <div className="mt-8 flex gap-3">
-                <button className="flex-[2] bg-bg-main border border-border-subtle hover:bg-bg-surface text-text-primary py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
-                  Ver Detalles
-                </button>
-                <button className="flex-1 border border-border-subtle hover:border-cecyteq-orange text-text-secondary py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
-                  Editar
-                </button>
+                <Link href={`/dashboard/docentes/grupos/${grupo.id}`} className="flex-1 text-center bg-bg-main border border-border-subtle hover:bg-bg-surface text-text-primary py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                  Ver y Editar Detalles
+                </Link>
               </div>
             </div>
           ))

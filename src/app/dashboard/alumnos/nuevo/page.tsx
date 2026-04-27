@@ -349,7 +349,7 @@ export default function NuevoAlumnoPage() {
           {/* SECCIÓN 3: EMERGENCIA */}
           <div className="bg-bg-surface border border-border-subtle rounded-[2.5rem] p-8 shadow-glow">
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-400">
+              <div className="w-10 h-10 bg-cecyteq-red/10 rounded-xl flex items-center justify-center text-cecyteq-red">
                 <AlertCircle size={20} />
               </div>
               <h2 className="text-xl font-black text-text-primary tracking-tight uppercase">3. Protocolo de Emergencia</h2>
@@ -358,7 +358,7 @@ export default function NuevoAlumnoPage() {
             <div className="space-y-6">
               <div className="flex flex-wrap gap-4">
                 {['padre1', 'padre2', 'otro'].map((tipo) => (
-                  <label key={tipo} className={`cursor-pointer px-6 py-3 rounded-2xl border-2 transition-all flex items-center gap-2 ${formData.contactoEmergenciaTipo === tipo ? 'bg-red-500/10 border-red-500 text-red-400 font-black' : 'bg-bg-main border-border-subtle text-text-secondary font-bold hover:border-text-secondary'}`}>
+                  <label key={tipo} className={`cursor-pointer px-6 py-3 rounded-2xl border-2 transition-all flex items-center gap-2 ${formData.contactoEmergenciaTipo === tipo ? 'bg-cecyteq-red/10 border-cecyteq-red text-cecyteq-red font-black' : 'bg-bg-main border-border-subtle text-text-secondary font-bold hover:border-text-secondary'}`}>
                     <input type="radio" name="contactoEmergenciaTipo" value={tipo} checked={formData.contactoEmergenciaTipo === tipo} onChange={(e) => setFormData((f) => ({ ...f, contactoEmergenciaTipo: e.target.value as 'padre1' | 'padre2' | 'otro' }))} className="hidden" />
                     <span className="text-xs uppercase tracking-widest">{tipo === 'padre1' ? 'Tutor 1' : tipo === 'padre2' ? 'Tutor 2' : 'Otra Persona'}</span>
                   </label>
@@ -367,11 +367,11 @@ export default function NuevoAlumnoPage() {
 
               {formData.contactoEmergenciaTipo === 'otro' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-bg-main rounded-3xl border border-red-500/20 animate-fadeIn">
-                  <input placeholder="Nombre" value={formData.otroNombre} onChange={(e) => setFormData((f) => ({ ...f, otroNombre: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
-                  <input placeholder="Apellidos" value={formData.otroApellidos} onChange={(e) => setFormData((f) => ({ ...f, otroApellidos: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
-                  <input placeholder="Parentesco" value={formData.otroParentesco} onChange={(e) => setFormData((f) => ({ ...f, otroParentesco: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
-                  <input placeholder="Teléfono" value={formData.otroTelefono} onChange={(e) => setFormData((f) => ({ ...f, otroTelefono: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
-                  <input placeholder="Ocupación" value={formData.otroOcupacion} onChange={(e) => setFormData((f) => ({ ...f, otroOcupacion: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-red-500 transition-all font-bold" />
+                  <input placeholder="Nombre" value={formData.otroNombre} onChange={(e) => setFormData((f) => ({ ...f, otroNombre: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-red transition-all font-bold" />
+                  <input placeholder="Apellidos" value={formData.otroApellidos} onChange={(e) => setFormData((f) => ({ ...f, otroApellidos: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-red transition-all font-bold" />
+                  <input placeholder="Parentesco" value={formData.otroParentesco} onChange={(e) => setFormData((f) => ({ ...f, otroParentesco: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-red transition-all font-bold" />
+                  <input placeholder="Teléfono" value={formData.otroTelefono} onChange={(e) => setFormData((f) => ({ ...f, otroTelefono: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-red transition-all font-bold" />
+                  <input placeholder="Ocupación" value={formData.otroOcupacion} onChange={(e) => setFormData((f) => ({ ...f, otroOcupacion: e.target.value }))} className="w-full bg-bg-surface border border-border-subtle text-text-primary p-3 rounded-xl outline-none focus:border-cecyteq-red transition-all font-bold" />
                 </div>
               )}
             </div>

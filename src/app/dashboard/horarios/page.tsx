@@ -27,7 +27,7 @@ export default async function HorariosPage() {
           grupoRel: {
             include: {
               docenteGrupos: {
-                include: { docente: true }
+                include: { docente: true, materia: true }
               }
             }
           }
@@ -64,7 +64,7 @@ export default async function HorariosPage() {
       const mat = materias[(hIdx + dIdx) % materias.length];
       return { 
         tipo: 'clase', 
-        nombre: mat.materia, 
+        nombre: mat.materia.nombre, 
         docente: `${mat.docente.nombres} ${mat.docente.apellidos}`
       };
     });

@@ -57,7 +57,7 @@ export default async function DetalleTareaPage({ params }: { params: { id: strin
           <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 shadow-sm">
             <div className="flex justify-between items-start gap-4 mb-6">
               <div>
-                <div className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg w-fit mb-3">
+                <div className="bg-cecyteq-green/10 text-cecyteq-green text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg w-fit mb-3">
                   {tarea.materia}
                 </div>
                 <h1 className="text-3xl font-bold text-white leading-tight">{tarea.titulo}</h1>
@@ -66,7 +66,7 @@ export default async function DetalleTareaPage({ params }: { params: { id: strin
 
             <div className="flex flex-wrap gap-6 mb-8 text-sm">
               <div className="flex items-center gap-2 text-slate-400">
-                <User size={18} className="text-emerald-400/60" />
+                <User size={18} className="text-cecyteq-green/60" />
                 <span>Docente: <strong className="text-slate-200">{tarea.docente.nombres} {tarea.docente.apellidos}</strong></span>
               </div>
               <div className="flex items-center gap-2 text-slate-400">
@@ -76,7 +76,7 @@ export default async function DetalleTareaPage({ params }: { params: { id: strin
                 </strong></span>
               </div>
               <div className="flex items-center gap-2 text-slate-400">
-                <Clock size={18} className="text-emerald-400/60" />
+                <Clock size={18} className="text-cecyteq-green/60" />
                 <span>Grupo: <strong className="text-slate-200">{tarea.grupo.nombre}</strong></span>
               </div>
             </div>
@@ -91,16 +91,15 @@ export default async function DetalleTareaPage({ params }: { params: { id: strin
 
         {/* Columna Derecha: Estado de la Entrega */}
         <div className="space-y-6">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-glow">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-glow">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <FileText className="text-orange-400" size={20} /> Tu Trabajo
+              <CheckCircle className="text-cecyteq-green" size={32} /> Tu Trabajo
             </h3>
             
             {entregaExistente ? (
               <div className="space-y-4">
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 text-center">
-                  <p className="text-emerald-400 font-bold text-sm">✓ Tarea Entregada</p>
-                  <p className="text-xs text-slate-500 mt-1">
+                <div className="flex-[2] bg-cecyteq-green hover:bg-cecyteq-green/90 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cecyteq-green/20 disabled:opacity-50">✓ Tarea Entregada
+                  <p className="text-xs text-zinc-500 mt-1">
                     {new Date(entregaExistente.entregadoEn).toLocaleString()}
                   </p>
                 </div>

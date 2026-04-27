@@ -9,10 +9,11 @@ export default async function MateriasPage() {
   const asignaciones = await prisma.grupoDocente.findMany({
     include: {
       docente: true,
-      grupo: true
+      grupo: true,
+      materia: true
     },
     orderBy: [
-      { materia: 'asc' },
+      { materia: { nombre: 'asc' } },
       { grupo: { nombre: 'asc' } }
     ]
   });
@@ -67,7 +68,7 @@ export default async function MateriasPage() {
                 asignaciones.map((asig) => (
                   <tr key={asig.id} className="group hover:bg-bg-main/50 transition-colors">
                     <td className="px-8 py-5">
-                      <span className="font-black text-cecyteq-green tracking-tight text-base group-hover:text-cecyteq-orange transition-colors uppercase">{asig.materia}</span>
+                      <span className="font-black text-cecyteq-green tracking-tight text-base group-hover:text-cecyteq-orange transition-colors uppercase">{asig.materia.nombre}</span>
                     </td>
                     <td className="px-8 py-5 font-bold text-text-primary">
                       {asig.grupo.nombre}

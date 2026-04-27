@@ -11,7 +11,8 @@ export default async function ListaDocentesPage() {
       usuario: true,
       grupos: {
         include: {
-          grupo: true
+          grupo: true,
+          materia: true
         }
       }
     },
@@ -92,7 +93,7 @@ export default async function ListaDocentesPage() {
                     <td className="px-8 py-5">
                       <div className="flex gap-2 flex-wrap max-w-[240px]">
                         {docente.grupos.length > 0 ? docente.grupos.map(g => (
-                          <span key={g.id} className="px-3 py-1.5 bg-bg-main border border-border-subtle rounded-xl text-[9px] font-black text-text-secondary uppercase tracking-widest" title={g.materia}>
+                          <span key={g.id} className="px-3 py-1.5 bg-bg-main border border-border-subtle rounded-xl text-[9px] font-black text-text-secondary uppercase tracking-widest" title={g.materia.nombre}>
                             {g.grupo.nombre}
                           </span>
                         )) : (

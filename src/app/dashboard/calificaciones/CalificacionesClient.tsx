@@ -203,7 +203,7 @@ function AlumnoRow({ alumno, grupoNombre, defaultOpen = false }: {
         if (data.row.index < draft.length) {
           const fin = draft[data.row.index]?.final;
           if ((data.column.index === 7 || data.column.index === 8) && fin !== null && fin < 6) {
-            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.textColor = [225, 29, 72];
             data.cell.styles.fontStyle = 'bold';
           }
         }
@@ -223,7 +223,7 @@ function AlumnoRow({ alumno, grupoNombre, defaultOpen = false }: {
     doc.save(`Boleta_${alumno.matricula}.pdf`);
   };
 
-  const promedioColor = promedioDraft === null ? 'text-text-secondary/40' : promedioDraft >= 6 ? 'text-cecyteq-green' : 'text-red-500';
+  const promedioColor = promedioDraft === null ? 'text-text-secondary/40' : promedioDraft >= 6 ? 'text-cecyteq-green' : 'text-cecyteq-red';
 
   return (
     <>
@@ -296,7 +296,7 @@ function AlumnoRow({ alumno, grupoNombre, defaultOpen = false }: {
                                 value={cal[field] ?? ''}
                                 onChange={e => setVal(cal.id, field, e.target.value)}
                                 className={`w-16 text-center bg-bg-main border rounded-xl py-2 text-text-primary font-black outline-none transition-all ${
-                                  field === 'final' ? isRep ? 'border-red-500/50 text-red-500' : isAp ? 'border-cecyteq-green/50 text-cecyteq-green' : 'border-border-subtle' : 'border-border-subtle focus:border-cecyteq-orange'
+                                  field === 'final' ? isRep ? 'border-cecyteq-red/50 text-cecyteq-red' : isAp ? 'border-cecyteq-green/50 text-cecyteq-green' : 'border-border-subtle' : 'border-border-subtle focus:border-cecyteq-orange'
                                 }`}
                                 placeholder="—"
                               />
@@ -307,7 +307,7 @@ function AlumnoRow({ alumno, grupoNombre, defaultOpen = false }: {
                               ? <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-bg-main border border-border-subtle text-text-secondary/50">Cursando</span>
                               : isAp
                                 ? <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20">Aprobado</span>
-                                : <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">Reprobado</span>
+                                : <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-cecyteq-red/10 text-cecyteq-red border border-cecyteq-red/20">Reprobado</span>
                             }
                           </td>
                         </tr>

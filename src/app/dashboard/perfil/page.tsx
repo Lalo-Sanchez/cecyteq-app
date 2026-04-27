@@ -18,7 +18,7 @@ export default function PerfilPage() {
   const handleLogout = async () => {
     await logoutUser();
     localStorage.removeItem('userRole');
-    router.push('/login');
+    router.push('/');
   };
 
   const getUserName = () => {

@@ -347,7 +347,7 @@ export default function ReprobadosClient({ grupos, reprobados, selectedGrupoId, 
                           <td className="px-3 py-4 text-center font-medium">{cal.parcial1 ?? '—'}</td>
                           <td className="px-3 py-4 text-center font-medium">{cal.parcial2 ?? '—'}</td>
                           <td className="px-3 py-4 text-center font-medium">{cal.parcial3 ?? '—'}</td>
-                          <td className="px-3 py-4 text-center font-black text-red-500 bg-red-500/5">
+                          <td className="px-3 py-4 text-center font-black text-cecyteq-red bg-cecyteq-red/5">
                             {cal.final !== null ? cal.final.toFixed(1) : '—'}
                           </td>
                           <td className="px-3 py-3 text-center border-r border-border-subtle">

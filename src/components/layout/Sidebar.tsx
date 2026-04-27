@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { LayoutDashboard, Users, BookOpen, FileText, LogOut, CheckCircle, Briefcase, Bell, Award, AlertTriangle, Clock, ShieldCheck } from 'lucide-react';
 
 import { logoutUser } from '@/actions/auth';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Sidebar() {
   const router = useRouter();
@@ -29,9 +29,10 @@ export default function Sidebar() {
   const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userId');
     }
-    await logoutUser();
-    router.push('/');
+    await logoutUser(); // Limpia cookies personalizadas
+    await signOut({ callbackUrl: '/' }); // Limpia sesión de NextAuth y redirige
   };
 
   const [serviciosEscolaresAbiertos, setServiciosEscolaresAbiertos] = useState(false);
@@ -61,7 +62,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-bg-surface border-r border-border-subtle hidden md:flex flex-col h-full">
       <div className="h-24 flex items-center gap-3 px-6 border-b border-border-subtle bg-bg-main/20">
-        <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl p-1.5 shadow-sm group transition-transform hover:scale-110">
+        <div className="w-12 h-12 flex items-center justify-center rounded-xl p-1 group transition-transform hover:scale-110">
           <img src="/cecyteq_logo.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col">

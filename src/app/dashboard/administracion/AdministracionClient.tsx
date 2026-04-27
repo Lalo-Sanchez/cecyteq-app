@@ -157,11 +157,11 @@ export default function AdministracionClient({
                 <p className="text-slate-500 text-sm mb-4">{u.email}</p>
                 
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800/50">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${u.rol.nombre === 'admin' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${u.rol.nombre === 'admin' ? 'bg-cecyteq-orange/10 text-cecyteq-orange border border-cecyteq-orange/20' : 'bg-cecyteq-green/10 text-cecyteq-green border border-cecyteq-green/20'}`}>
                     {u.rol.nombre}
                   </span>
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-cecyteq-green"></div>
                     Activo
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export default function AdministracionClient({
                         onClick={() => handleTogglePermiso(rol.id, permiso.id, isGranted)}
                         className={`flex items-center justify-between p-4 rounded-2xl border transition-all text-left ${
                           isGranted 
-                            ? 'bg-emerald-500/5 border-emerald-500/30 text-emerald-300' 
+                            ? 'bg-cecyteq-green/5 border-cecyteq-green/30 text-cecyteq-green' 
                             : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:border-slate-700'
                         }`}
                       >
@@ -208,7 +208,7 @@ export default function AdministracionClient({
                           </span>
                           <span className="text-[10px] opacity-70">Acceso al módulo</span>
                         </div>
-                        {isGranted ? <CheckCircle size={18} className="text-emerald-400" /> : <XCircle size={18} className="text-slate-700" />}
+                        {isGranted ? <CheckCircle size={18} className="text-cecyteq-green" /> : <XCircle size={18} className="text-slate-700" />}
                       </button>
                     );
                   })}
@@ -274,7 +274,7 @@ export default function AdministracionClient({
                 <button 
                   type="submit"
                   disabled={isLoading}
-                  className="flex-2 bg-orange-500 hover:bg-orange-400 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-orange-500/20 disabled:opacity-50 transition-all"
+                  className="flex-2 bg-cecyteq-orange hover:bg-cecyteq-orange/90 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-cecyteq-orange/20 disabled:opacity-50 transition-all"
                 >
                   {isLoading ? 'Creando...' : 'Dar Acceso'}
                 </button>

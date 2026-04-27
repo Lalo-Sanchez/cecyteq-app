@@ -154,11 +154,22 @@ model GrupoDocente {
   id        Int     @id @default(autoincrement())
   grupoId   Int
   docenteId Int
-  materia   String
-  grupo     Grupo   @relation(fields: [grupoId], references: [id])
-  docente   Docente @relation(fields: [docenteId], references: [id])
+  materiaId Int
+  grupo     Grupo   @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  docente   Docente @relation(fields: [docenteId], references: [id], onDelete: Cascade)
+  materia   MateriaCatalogo @relation(fields: [materiaId], references: [id], onDelete: Cascade)
+  horarios  Horario[]
 
-  @@unique([grupoId, docenteId, materia])
+  @@unique([grupoId, docenteId, materiaId])
+}
+
+model Horario {
+  id             Int           @id @default(autoincrement())
+  grupoDocenteId Int
+  grupoDocente   GrupoDocente  @relation(fields: [grupoDocenteId], references: [id], onDelete: Cascade)
+  diaSemana      String        // Ej: "Lunes", "Martes"
+  horaInicio     String        // Ej: "07:00"
+  horaFin        String        // Ej: "08:40"
 }
 
 model Asistencia {
@@ -202,12 +213,13 @@ model BitacoraAcceso {
 }
 
 model MateriaCatalogo {
-  id          Int      @id @default(autoincrement())
-  nombre      String   @unique
-  descripcion String?
-  creditos    Int      @default(0)
-  semestre    Int?
-  creadoEn    DateTime @default(now())
+  id            Int            @id @default(autoincrement())
+  nombre        String         @unique
+  descripcion   String?
+  creditos      Int            @default(0)
+  semestre      Int?
+  creadoEn      DateTime       @default(now())
+  grupoDocentes GrupoDocente[]
 }
 
 // ==========================================

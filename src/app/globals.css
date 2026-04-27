@@ -3,6 +3,7 @@
 @theme {
   --color-cecyteq-green: #3BA64A;
   --color-cecyteq-orange: #F06C22;
+  --color-cecyteq-red: #E11D48;
   --color-bg-main: #121212;
   --color-bg-surface: #1E1E1E;
   --color-border-subtle: #333333;
@@ -22,6 +23,7 @@
   --text-secondary: #9CA3AF;
   --cecyteq-green: #3BA64A;
   --cecyteq-orange: #F06C22;
+  --cecyteq-red: #E11D48;
 }
 
 html {

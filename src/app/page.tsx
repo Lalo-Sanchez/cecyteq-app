@@ -64,7 +64,7 @@ export default function LoginPage() {
 
       <div className="max-w-md w-full bg-bg-surface border border-border-subtle rounded-[2.5rem] p-10 shadow-glow relative z-10">
         <div className="flex flex-col items-center mb-10">
-          <div className="mb-6 group transition-transform hover:scale-105 bg-white p-4 rounded-[2rem] shadow-xl">
+          <div className="mb-6 group transition-transform hover:scale-105 p-2 rounded-[2rem]">
             <img src="/cecyteq_logo.png" alt="CECYTEQ Logo" className="w-32 h-auto object-contain" />
           </div>
           <h1 className="text-4xl font-black text-text-primary text-center tracking-tighter">CECyTEQ 5</h1>

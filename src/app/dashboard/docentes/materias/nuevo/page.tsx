@@ -37,8 +37,8 @@ export default function NuevaMateriaPage() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center animate-fadeIn">
-          <div className="mx-auto w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle className="text-emerald-500" size={32} />
+          <div className="mx-auto w-16 h-16 bg-cecyteq-green/20 rounded-full flex items-center justify-center mb-4">
+            <CheckCircle className="text-cecyteq-green" size={32} />
           </div>
           <h2 className="text-2xl font-bold text-white">¡Materia Registrada!</h2>
           <p className="text-slate-400 mt-2">La materia ha sido añadida exitosamente al catálogo institucional.</p>
@@ -108,7 +108,7 @@ export default function NuevaMateriaPage() {
                 value={formData.descripcion}
                 onChange={e => setFormData({...formData, descripcion: e.target.value})}
                 rows={4}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all resize-none"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all resize-none"
                 placeholder="Describe brevemente el contenido de la materia..."
               />
             </div>
@@ -132,7 +132,7 @@ export default function NuevaMateriaPage() {
             <button 
               type="submit"
               disabled={isPending}
-              className="flex-[2] bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+              className="flex-[2] bg-cecyteq-green hover:bg-cecyteq-green/90 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cecyteq-green/20 disabled:opacity-50"
             >
               {isPending ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               {isPending ? 'Guardando...' : 'Crear Materia'}

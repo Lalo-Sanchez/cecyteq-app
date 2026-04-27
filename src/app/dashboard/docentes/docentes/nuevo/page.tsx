@@ -73,7 +73,7 @@ export default function NuevoDocentePage() {
                 required
                 value={formData.nombres}
                 onChange={e => setFormData({...formData, nombres: e.target.value})}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all"
                 placeholder="Ej. Juan Carlos"
               />
             </div>
@@ -84,7 +84,7 @@ export default function NuevoDocentePage() {
                 required
                 value={formData.apellidos}
                 onChange={e => setFormData({...formData, apellidos: e.target.value})}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all"
                 placeholder="Ej. Pérez García"
               />
             </div>
@@ -95,7 +95,7 @@ export default function NuevoDocentePage() {
                 required
                 value={formData.email}
                 onChange={e => setFormData({...formData, email: e.target.value})}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all"
                 placeholder="docente@cecyteq.edu.mx"
               />
             </div>
@@ -105,7 +105,7 @@ export default function NuevoDocentePage() {
                 type="text"
                 value={formData.especialidad}
                 onChange={e => setFormData({...formData, especialidad: e.target.value})}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all"
                 placeholder="Ej. Tecnologías de la Información"
               />
             </div>
@@ -115,7 +115,7 @@ export default function NuevoDocentePage() {
                 type="tel"
                 value={formData.telefono}
                 onChange={e => setFormData({...formData, telefono: e.target.value})}
-                className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-white outline-none focus:ring-1 focus:ring-cecyteq-green/50 transition-all"
                 placeholder="442 000 0000"
               />
             </div>

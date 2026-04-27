@@ -285,7 +285,7 @@ export default function AlumnosPage() {
 
   const getEstatusColor = (estatus: EstatusType) => {
     switch(estatus) {
-      case 'Inscrito': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+      case 'Inscrito': return 'bg-cecyteq-green/10 text-cecyteq-green border-cecyteq-green/20';
       case 'Baja Temporal': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       case 'Baja': return 'bg-red-500/10 text-red-400 border-red-500/20';
       case 'Egresado': return 'bg-cecyteq-orange/10 text-cecyteq-orange border-cecyteq-orange/20';
@@ -473,7 +473,7 @@ export default function AlumnosPage() {
 
       {/* MODAL DE CONFIRMACIÓN DE ELIMINACIÓN */}
       {deleteModal.isOpen && deleteModal.alumno && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bg-main/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <div className="bg-bg-surface border border-border-subtle rounded-[2rem] w-full max-w-md shadow-glow p-8 animate-scaleIn">
             <h3 className="text-2xl font-black text-text-primary tracking-tight mb-2">Eliminar Registro</h3>
             <p className="text-sm text-text-secondary font-medium mb-6">Esta acción es irreversible y eliminará todo el historial del alumno.</p>
